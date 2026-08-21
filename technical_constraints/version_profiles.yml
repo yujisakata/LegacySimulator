@@ -1,0 +1,279 @@
+schema_version: 1
+profile_id: NEW-BUSINESS-TECH-EVOLUTION
+description: "1980年のCOBOLからJava/Springへ段階移行する標準技術プロファイル"
+
+versions:
+  V1:
+    scenario_year: 1980
+    generation: mainframe_baseline
+    architecture: "COBOLオンライン処理と夜間バッチを固定長ファイルで接続する単一メインフレーム構成"
+    languages:
+      primary: "ANSI COBOL相当"
+      job_control: "JCL相当"
+      prohibited: ["Java", "依存性注入フレームワーク", "ORM"]
+    online:
+      ui: "文字端末"
+      transaction: "画面単位の手続き型COBOLプログラム"
+    batch:
+      scheduler: "JCLジョブネット"
+      style: "順次読込、ソート、マッチング、固定長出力"
+    data:
+      system_of_record: "契約原簿ファイル"
+      stores: ["索引編成ファイル", "順編成ファイル"]
+      record_format: "固定長。COPY句でレコード定義を共有"
+    integration: ["ファイル受渡し", "紙帳票"]
+    build_deploy: "コンパイル、リンク、ロードモジュール配布を運用手順書に従い実施"
+    testing: "代表データによるプログラム試験、ジョブ結合試験、結果帳票の目視確認"
+    operational_limits:
+      - "夜間バッチ枠内に処理を完了する"
+      - "ファイルレイアウト変更は下流処理と同時調整する"
+    change_policy: "設計、実装、テストを同期して更新する"
+    inherited_assets: []
+
+  V2:
+    scenario_year: 1985
+    generation: mainframe_extension
+    architecture: "V1構成を維持し、特約判定を既存オンライン・バッチへ追加"
+    languages:
+      primary: "COBOL"
+      job_control: "JCL相当"
+      prohibited: ["Java", "レコード全面再設計"]
+    online:
+      ui: "文字端末に特約入力欄を追加"
+      transaction: "既存プログラム内の特約フラグ分岐"
+    batch:
+      scheduler: "既存ジョブネットへ特約判定ステップを追加"
+      style: "主契約レコードの未使用領域を特約コードとして解釈"
+    data:
+      system_of_record: "契約原簿ファイル"
+      stores: ["索引編成ファイル", "順編成ファイル"]
+      record_format: "V1固定長との下位互換を必須とする"
+    integration: ["ファイル受渡し", "紙帳票"]
+    build_deploy: "変更プログラム単位でロードモジュールを配布"
+    testing: "修正箇所と主要な主契約・特約組合せを試験"
+    operational_limits:
+      - "証券発行バッチのレコード位置を変更しない"
+      - "特約なしの既存データを再変換しない"
+    change_policy: "既存構造への局所追加を優先する"
+    inherited_assets: ["V1契約原簿", "V1ジョブネット", "V1帳票"]
+
+  V3:
+    scenario_year: 1990
+    generation: mainframe_product_sprawl
+    architecture: "商品別に複製されたCOBOLオンライン・査定バッチが共通ファイルを利用"
+    languages:
+      primary: "COBOL"
+      job_control: "JCL相当"
+      prohibited: ["商品共通基盤の新規構築", "全面回帰試験を伴う共通化"]
+    online:
+      ui: "商品別文字端末画面"
+      transaction: "終身保険処理をコピーした商品別プログラム"
+    batch:
+      scheduler: "商品別分岐を追加した単一ジョブネット"
+      style: "商品コードにより類似プログラムを呼び分ける"
+    data:
+      system_of_record: "商品共通の契約原簿ファイル"
+      stores: ["索引編成ファイル", "順編成ファイル"]
+      record_format: "商品別再定義を含む固定長レコード"
+    integration: ["ファイル受渡し", "紙帳票"]
+    build_deploy: "商品別ロードモジュールを個別配布"
+    testing: "新商品を中心に試験し、既存商品は代表ケースのみ確認"
+    operational_limits:
+      - "コピー元とコピー先の共通判定を自動同期する仕組みはない"
+      - "差分設計書を原本と併読する"
+    change_policy: "商品別の影響局所化を優先する"
+    inherited_assets: ["V1-V2契約原簿", "特約フラグ", "複製元COBOL"]
+
+  V4:
+    scenario_year: 1995
+    generation: mainframe_temporal_rules
+    architecture: "商品別COBOLに制度施行日別の新旧判定段落が併存"
+    languages:
+      primary: "COBOL"
+      job_control: "JCL相当"
+      prohibited: ["旧判定段落の削除", "システム日付だけによる過去契約判定"]
+    online:
+      ui: "旧告知項目と新告知項目を受付日条件で切替"
+      transaction: "受付日、告知日、再告知フラグで判定段落を選択"
+    batch:
+      scheduler: "制度日前後のデータを同一ジョブで処理"
+      style: "日付条件と例外フラグが複数段落へ分散"
+    data:
+      system_of_record: "契約原簿ファイル"
+      stores: ["索引編成ファイル", "制度日マスタ", "順編成ファイル"]
+      record_format: "新告知項目を予約領域へ格納"
+    integration: ["ファイル受渡し", "紙帳票"]
+    build_deploy: "施行日前にロードし、制度日マスタで有効化"
+    testing: "施行日前、当日、施行日後、再告知の境界値試験"
+    operational_limits:
+      - "旧契約の再査定結果を再現する"
+      - "制度判定に利用した日付を記録する"
+    change_policy: "期限優先。旧処理を維持したまま新処理を追加する"
+    inherited_assets: ["商品別COBOL", "差分設計書", "特約フラグ"]
+
+  V5:
+    scenario_year: 2000
+    generation: cobol_with_java_query
+    architecture: "COBOL中核に、参照専用Java Web照会システムを追加した二層構成"
+    languages:
+      primary: "COBOL"
+      secondary: "当時のJava/Servlet/JDBC相当"
+      prohibited: ["Javaから契約原簿を直接更新", "COBOL査定の同時移行"]
+    online:
+      ui: "COBOL文字端末とJava Web照会画面が併存"
+      transaction: "更新はCOBOL、照会はJava"
+    batch:
+      scheduler: "COBOLジョブネットに照会DB複製処理を追加"
+      style: "夜間に固定長ファイルからRDBへ変換"
+    data:
+      system_of_record: "COBOL契約原簿"
+      stores: ["メインフレームファイル", "Java照会用RDB"]
+      record_format: "固定長からRDB列へ一方向変換"
+    integration: ["夜間ファイル転送", "文字コード変換"]
+    build_deploy: "COBOLロードモジュールとJavaアプリケーションサーバを別々に配布"
+    testing: "COBOL試験とJava画面試験を別チームで実施"
+    operational_limits:
+      - "Java照会値は前夜時点の場合がある"
+      - "空白、ゼロ、NULLの変換規則を維持する"
+    change_policy: "COBOL中核への変更を限定し、周辺からJava化する"
+    inherited_assets: ["V1-V4 COBOL", "固定長ファイル", "商品別差分資料"]
+
+  V6:
+    scenario_year: 2005
+    generation: spring_entry
+    architecture: "Spring受付・事務点検とCOBOL査定を夜間固定長ファイルで接続"
+    languages:
+      primary: "Java"
+      secondary: "COBOL"
+      framework: "Spring Framework世代。XMLによるDIとトランザクション設定を中心とする"
+      prohibited: ["COBOL査定バッチの置換", "ファイル連携の無断変更"]
+    online:
+      ui: "サーバサイドHTMLのWeb受付"
+      transaction: "Springサービスで受付、入力点検、状態管理"
+    batch:
+      scheduler: "Java受付締め処理とCOBOLジョブネットを時刻連携"
+      style: "Java出力ファイルをCOBOLが取り込み、結果ファイルをJavaへ返却"
+    data:
+      system_of_record: "受付中はJava RDB、査定確定後はCOBOL契約原簿"
+      stores: ["Java受付RDB", "COBOL契約原簿", "連携ファイル保管領域"]
+      record_format: "Java-COBOL間は固定長。Java内部はRDB"
+    integration: ["SFTP相当のファイル転送", "文字コード変換", "受付番号による相関"]
+    build_deploy: "Javaはビルドツールとアプリケーションサーバ、COBOLは従来手順"
+    testing: "Java単体・結合試験、COBOL代表試験、ファイル現新比較"
+    operational_limits:
+      - "オンライン受付と査定結果反映の間に夜間境界がある"
+      - "年齢・商品・必須項目判定がJavaとCOBOLに二重実装される"
+    change_policy: "新規オンライン機能はSpring、最終査定はCOBOLを優先する"
+    inherited_assets: ["全COBOL査定", "JCLジョブネット", "Java照会DB", "固定長変換表"]
+
+  V7:
+    scenario_year: 2010
+    generation: spring_primary_online
+    architecture: "Spring MVCモノリスを主要オンライン基盤とし、COBOLを契約原簿・夜間査定として残す"
+    languages:
+      primary: "Java"
+      secondary: "COBOL"
+      framework: "Spring Framework/Spring MVC。XML設定と注釈設定が併存"
+      prohibited: ["COBOL契約原簿の直接廃止", "共有モデルの全面置換"]
+    online:
+      ui: "社員・代理店向けWeb画面"
+      transaction: "チャネル別Controller、共通Service、商品別条件分岐"
+    batch:
+      scheduler: "JavaバッチとCOBOLジョブネットが別スケジューラで連携"
+      style: "チャネル別受付を共通固定長形式へ変換"
+    data:
+      system_of_record: "業務状態によりJava受付DBとCOBOL契約原簿を使い分ける"
+      stores: ["Java RDB", "COBOL契約原簿", "連携ファイル"]
+      record_format: "Java内部テーブルとCOBOL固定長の二重モデル"
+    integration: ["固定長ファイル", "社内SOAPサービス", "代理店認証"]
+    build_deploy: "JavaモノリスとCOBOLを別リリース。結合日は調整会議で決定"
+    testing: "Java回帰試験は主要画面中心。COBOLは変更段落中心。チャネル結合試験を追加"
+    operational_limits:
+      - "チャネル別既定値をCOBOLが再解釈する"
+      - "二つのスケジューラ間の完了連絡は運用監視に依存する"
+    change_policy: "オンラインはSpringへ集約し、バッチ移行は個別案件で判断する"
+    inherited_assets: ["COBOL契約原簿", "旧Java照会", "Spring XML設定", "商品別COBOL"]
+
+  V8:
+    scenario_year: 2015
+    generation: spring_integration_hub
+    architecture: "Springモノリスを連携ハブとして使用し、SOAP、ESB、ファイル、COBOLを接続"
+    languages:
+      primary: "Java"
+      secondary: "COBOL"
+      framework: "複数世代のSpring Framework、Spring MVC、社内連携ライブラリ"
+      prohibited: ["接続先を同時移行する前提の共通化", "運用再送を伴わない自動再送変更"]
+    online:
+      ui: "社員・代理店Web画面"
+      transaction: "Springモノリス内に接続先別アダプタを追加"
+    batch:
+      scheduler: "Java、ESB、COBOLのジョブを運用カレンダーで連鎖"
+      style: "オンライン照会、非同期キュー、夜間ファイルが混在"
+    data:
+      system_of_record: "契約はCOBOL、受付と連携状態はJava、外部情報は接続先"
+      stores: ["Java RDB", "COBOL契約原簿", "再送キュー", "監視台帳"]
+      record_format: "接続先形式から共通中間形式を経てCOBOL固定長へ変換"
+    integration: ["SOAP", "ESB", "非同期キュー", "固定長ファイル", "SFTP相当"]
+    build_deploy: "接続先別リリース計画とモノリス定例リリースを調整"
+    testing: "接続先スタブ、結合環境、手動再送試験。全接続先同時試験は行わない"
+    operational_limits:
+      - "再送順序と重複排除キーを接続先別に管理する"
+      - "外部応答の遅延中も受付状態を維持する"
+    change_policy: "接続先ごとの影響を限定し、共通中間形式で中核へ接続する"
+    inherited_assets: ["Springモノリス", "COBOL中核", "二重業務ルール", "複数の変換表"]
+
+  V9:
+    scenario_year: 2020
+    generation: multi_spring_audit
+    architecture: "旧Springモノリス、Spring Boot周辺アプリ、COBOL中核、監査DBの多世代構成"
+    languages:
+      primary: "複数世代のJava"
+      secondary: "COBOL"
+      framework: "旧Spring FrameworkとSpring Bootが併存"
+      prohibited: ["監査対象期間中のログ形式削除", "共有DBの一括分離"]
+    online:
+      ui: "旧Springモノリスを継続利用"
+      transaction: "新しい外部アダプタだけSpring Bootとして分離"
+    batch:
+      scheduler: "Java、Spring Boot、COBOL、監査集約を複数スケジューラで実行"
+      style: "業務処理後に複数ログを監査DBへ集約"
+    data:
+      system_of_record: "契約はCOBOL、受付はJava、監査証跡は監査DB"
+      stores: ["共有Java RDB", "COBOL契約原簿", "監査DB", "メッセージキュー"]
+      record_format: "DB行、JSON/XMLメッセージ、COBOL固定長、監査ログが併存"
+    integration: ["REST", "SOAP", "メッセージ", "固定長ファイル"]
+    build_deploy: "旧モノリス定例リリースとSpring Boot個別リリースが併存"
+    testing: "アプリ単位の自動テストと手動のシステム横断試験。監査ログ突合を追加"
+    operational_limits:
+      - "複数システムの時刻差を考慮して監査証跡を突合する"
+      - "共有DB変更は旧モノリスと新アプリの双方を確認する"
+    change_policy: "新規外部接続はSpring Boot、既存業務は旧SpringとCOBOLを維持する"
+    inherited_assets: ["V6以降のSpring設定", "COBOL中核", "接続先別アダプタ", "共有DB"]
+
+  V10:
+    scenario_year: 2026
+    generation: modernization_discovery
+    architecture: "現行多世代構成を観測対象とし、再構築先は調査結果に基づいて決定する"
+    languages:
+      analysis_runtime: "Java 21を含む現代的な解析・テスト環境"
+      observed: ["COBOL", "旧世代Java", "Spring Framework", "Spring Boot", "JCL相当"]
+      prohibited: ["証拠なしの業務ロジック整理", "一律の自動コード変換", "推定仕様の無審査採用"]
+    online:
+      ui: "現行画面を振る舞い観測と現新比較に利用"
+      transaction: "処理経路、データ変更、外部呼出しを記録して知識エッジを復元"
+    batch:
+      scheduler: "現行ジョブ依存関係を可視化し、ゴールデンデータで再現"
+      style: "入力、途中ファイル、出力、ログを比較可能にする"
+    data:
+      system_of_record: "項目単位で調査し、確信度と根拠を付ける"
+      stores: ["全既存ストア", "解析用コピー", "ゴールデンデータセット", "ナレッジグラフ"]
+      record_format: "既存形式を保存し、意味マッピングを別管理する"
+    integration: ["現行全方式", "観測プロキシ", "比較ハーネス"]
+    build_deploy: "現行系と再構築候補を分離し、比較結果を承認してから切替を検討"
+    testing: "特性テスト、ゴールデンマスター、境界値、制度日時点、業務レビュー"
+    operational_limits:
+      - "現行動作と業務上望ましい動作を区別して記録する"
+      - "復元仕様に根拠、反証、確信度を付ける"
+    change_policy: "コード変換より先に知識構造と変更可能性を回復する"
+    inherited_assets: ["V1-V9の全資産と履歴", "断片文書", "運用実績", "有識者ヒアリング"]
+

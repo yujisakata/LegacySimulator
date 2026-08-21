@@ -27,7 +27,8 @@
 | **事務点検** | Inspection / INSPECTION | 提出書類の記載漏れ、押印漏れ、加入資格等の形式的完全性を確認する業務。 | `DOCUMENT_INSPECTION` | 不備発見時は不備照会を起票 |
 | **不備照会** | Deficiency Inquiry / DEFICIENCY | 書類不備が発生した際、営業職員を通じて顧客へ訂正・再提出を求める手続。 | `DEFICIENCY_INQUIRY` | 30日間の手続猶予期間を設定 |
 | **社医回付** | Medical Officer Referral / MED_REFERRAL | 査定担当者単独で判断困難な案件を、専門医（社医）へ意見照会する手続。 | `MEDICAL_OFFICER_REFERRAL` | 目標SLAは点検完了後5営業日 |
-| **受付日** | Application Receipt Date / RECEIPT_DATE | 申込書類が支社等に到着し、公式に受け付けられた日。 | `APPLICATION_RECEIPT_DATE` | 不備猶予期間（30日）の起算日 |
+| **受付日** | Application Receipt Date / RECEIPT_DATE | 申込書類が支社等に到着し、公式に受け付けられた日。 | `APPLICATION_RECEIPT_DATE` | 事務点検SLAの起算日 |
+| **不備照会起票日** | Deficiency Open Date / DEFICIENCY_DATE | 事務点検で不備を認定し、不備照会を起票した日。 | `DEFICIENCY_OPEN_DATE` | 不備猶予期間（30日）の起算日 |
 | **三要件の具備** | Tripartite Requirements / THREE_REQS | 「申込の完了」「告知の完了」「第1回保険料の受領」の3つが揃うこと。 | `REQUIREMENTS_FULFILLED` | 責任開始の成立不可欠条件 |
 
 ---

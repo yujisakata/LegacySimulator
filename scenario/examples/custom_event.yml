@@ -1,0 +1,51 @@
+schema_version: 1
+event_id: EV-V05-CUSTOM-001
+catalog_ref: BUS-PRODUCT-COPY
+applied_version: V5
+name: "定期保険の短納期追加"
+trigger: "営業部門が3か月後の販売開始を確約した"
+
+constraints:
+  deadline: "3か月"
+  people:
+    - "COBOL有識者1名"
+    - "商品担当者は兼務"
+  compatibility:
+    - "既存の固定長ファイルを変更しない"
+    - "終身保険の全面回帰試験を行わない"
+
+decision:
+  action: "終身保険の査定処理をコピーし、定期保険固有のIF文を追加する"
+  rationale: "既存商品の変更範囲を限定し、販売開始日に間に合わせるため"
+  rejected_alternatives:
+    - alternative: "商品共通の査定エンジンを作る"
+      reason: "既存商品の再設計と全面回帰試験が必要になる"
+
+artifact_updates:
+  requirements: delta_only
+  original_design: unchanged
+  source_code: full
+  tests: partial
+  operations_manual: unchanged
+  notes:
+    - "差分要件書には新しい判定条件だけを記載する"
+    - "原本設計書は終身保険専用の記述を維持する"
+
+knowledge_effect:
+  documented:
+    - "定期保険に固有の加入年齢条件"
+  tacit:
+    - "コピー元とコピー先で同時修正が必要な共通判定"
+    - "未設定の商品区分を終身保険として扱う互換ルール"
+  holders:
+    - role: "査定システム主任"
+      availability: "問い合わせ時のみ"
+  loss_risk: high
+  recovery_evidence:
+    - "二つのCOBOLプログラムの類似箇所"
+    - "結合テストの期待値"
+    - "リリース判定会議の議事録"
+
+mdi_effect: { locate: 1, analyze: 2, modify: 1, validate: 2, confidence: 3 }
+depends_on: []
+

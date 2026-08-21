@@ -1,0 +1,374 @@
+schema_version: 1
+scenario_id: NEW-BUSINESS-UNDERWRITING-EVOLUTION
+title: "生命保険新契約査定システム 技術・組織進化シナリオ"
+baseline_year: 1980
+description: >-
+  COBOLで構築された新契約査定システムが、商品追加、法改正、組織変更、
+  Java/Springへの段階移行、外部連携、監査対応を経て複数世代併存構成となる履歴。
+
+versions:
+  - version: V1
+    scenario_year: 1980
+    title: "終身保険向け初期構築"
+    technical_profile_ref: "technical_constraints/version_profiles.yml#V1"
+    knowledge_state_ref: "knowledge/knowledge_evolution.yml#V1"
+    context:
+      organization: "専任開発チームと査定部門が同席して設計"
+      delivery_pressure: normal
+      source_of_truth: "業務仕様、設計、実装、テストが相互参照可能"
+    events:
+      - event_id: EV-V01-BASELINE-001
+        catalog_ref: null
+        trigger: "終身保険の新契約受付と査定を機械化する"
+        constraints:
+          - "メインフレーム資源に上限がある"
+          - "紙書類と郵送を前提とする"
+        decision:
+          action: "COBOLオンライン処理と夜間バッチを固定長ファイルで接続する"
+          rationale: "当時の標準技術と運用体制に適合させるため"
+        artifact_updates: { requirements: full, original_design: full, source_code: full, tests: full, operations_manual: full }
+        knowledge_effect:
+          documented: ["主要な業務・設計・実装の対応関係"]
+          tacit: ["30日猶予と2,000万円決裁境界の判断背景"]
+          loss_risk: low
+        mdi_effect: { locate: 0, analyze: 0, modify: 0, validate: 0, confidence: 0 }
+        depends_on: []
+
+  - version: V2
+    scenario_year: 1985
+    title: "特約販売開始"
+    technical_profile_ref: "technical_constraints/version_profiles.yml#V2"
+    knowledge_state_ref: "knowledge/knowledge_evolution.yml#V2"
+    context:
+      organization: "初期チームが保守も担当"
+      delivery_pressure: high
+      source_of_truth: "原本設計と差分要求の併読が必要"
+    events:
+      - event_id: EV-V02-RIDER-001
+        catalog_ref: BUS-RIDER-PATCH
+        trigger: "災害死亡特約と入院特約を同時発売する"
+        constraints:
+          - "販売開始まで6か月"
+          - "下流の証券発行バッチは別部署管轄"
+        decision:
+          action: "契約レコードの未使用領域へ特約コードを格納し、既存査定へIF文を追加する"
+          rationale: "下流ファイルレイアウトの同時改訂を避けるため"
+        artifact_updates: { requirements: full, original_design: partial, source_code: full, tests: partial, operations_manual: partial }
+        knowledge_effect:
+          documented: ["特約コードと査定条件"]
+          tacit: ["未使用領域を選んだ理由", "特約なしを空白とゼロの両方で表す互換条件"]
+          loss_risk: medium
+        mdi_effect: { locate: 1, analyze: 1, modify: 1, validate: 2, confidence: 1 }
+        depends_on: [EV-V01-BASELINE-001]
+
+  - version: V3
+    scenario_year: 1990
+    title: "医療保険・がん保険の商品追加"
+    technical_profile_ref: "technical_constraints/version_profiles.yml#V3"
+    knowledge_state_ref: "knowledge/knowledge_evolution.yml#V3"
+    context:
+      organization: "商品部主導。開発チームは複数案件を兼務"
+      delivery_pressure: very_high
+      source_of_truth: "差分要件、コード、担当者説明が分散"
+    events:
+      - event_id: EV-V03-MEDICAL-COPY-001
+        catalog_ref: BUS-PRODUCT-COPY
+        trigger: "医療保険を3か月後に販売開始する"
+        constraints:
+          - "既存商品の全面回帰試験期間を確保できない"
+          - "商品共通モデルの設計承認に間に合わない"
+        decision:
+          action: "終身保険の査定プログラムをコピーし、医療保険固有IFを追加する"
+          rationale: "既存商品への変更を限定するため"
+        artifact_updates: { requirements: delta_only, original_design: unchanged, source_code: full, tests: partial, operations_manual: unchanged }
+        knowledge_effect:
+          documented: ["医療保険固有の加入条件"]
+          tacit: ["共通判定を両プログラムで同時修正する必要性", "コピー元から削除した条件の理由"]
+          loss_risk: high
+        mdi_effect: { locate: 1, analyze: 2, modify: 1, validate: 2, confidence: 2 }
+        depends_on: [EV-V02-RIDER-001]
+      - event_id: EV-V03-DOC-001
+        catalog_ref: DOC-DELTA-ONLY
+        trigger: "原本設計書の改訂審査がリリース判定会までに完了しない"
+        constraints:
+          - "原本はシステム企画部が管理"
+          - "商品追加チームに本文編集権限がない"
+        decision:
+          action: "医療保険差分設計書を別冊として発行する"
+          rationale: "リリースに必要な承認証跡を確保するため"
+        artifact_updates: { requirements: delta_only, original_design: unchanged, source_code: unchanged, tests: history_only, operations_manual: unchanged }
+        knowledge_effect:
+          documented: ["差分設計書の文書番号"]
+          tacit: ["原本、特約追補、医療保険差分を読む順序"]
+          loss_risk: high
+        mdi_effect: { locate: 1, analyze: 2, modify: 0, validate: 1, confidence: 3 }
+        depends_on: [EV-V03-MEDICAL-COPY-001]
+
+  - version: V4
+    scenario_year: 1995
+    title: "告知制度改定への施行日対応"
+    technical_profile_ref: "technical_constraints/version_profiles.yml#V4"
+    knowledge_state_ref: "knowledge/knowledge_evolution.yml#V4"
+    context:
+      organization: "法務、商品、保守の横断チーム"
+      delivery_pressure: fixed_deadline
+      source_of_truth: "施行通知、追補設計、実装の適用日判定を突合する必要がある"
+    events:
+      - event_id: EV-V04-REGULATION-001
+        catalog_ref: REG-EFFECTIVE-DATE
+        trigger: "新しい告知項目と判定基準を施行日から適用する"
+        constraints:
+          - "施行日は変更できない"
+          - "旧契約の再査定では旧基準を再現する"
+        decision:
+          action: "受付日と告知日の組み合わせで新旧COBOL段落を呼び分ける"
+          rationale: "申込途中で制度日をまたぐ契約を扱うため"
+        artifact_updates: { requirements: delta_only, original_design: partial, source_code: full, tests: partial, operations_manual: partial }
+        knowledge_effect:
+          documented: ["施行日と新告知項目"]
+          tacit: ["受付日と告知日が制度日をまたぐ場合の優先順位"]
+          loss_risk: high
+        mdi_effect: { locate: 1, analyze: 3, modify: 2, validate: 3, confidence: 2 }
+        depends_on: [EV-V03-DOC-001]
+      - event_id: EV-V04-PATCH-001
+        catalog_ref: OPS-EMERGENCY-PATCH
+        trigger: "施行日前受付・施行日後再告知の案件が旧基準で判定された"
+        constraints:
+          - "翌日査定分までに補正が必要"
+        decision:
+          action: "再告知フラグが立つ案件だけ告知日を優先する例外分岐を追加する"
+          rationale: "対象案件を限定して誤判定を防ぐため"
+        artifact_updates: { requirements: unchanged, original_design: unchanged, source_code: full, tests: partial, operations_manual: history_only }
+        knowledge_effect:
+          documented: ["障害票とパッチ番号"]
+          tacit: ["再告知フラグは一部支社で手入力されること"]
+          loss_risk: critical
+        mdi_effect: { locate: 1, analyze: 2, modify: 2, validate: 3, confidence: 3 }
+        depends_on: [EV-V04-REGULATION-001]
+
+  - version: V5
+    scenario_year: 2000
+    title: "有識者異動とJava照会画面の追加"
+    technical_profile_ref: "technical_constraints/version_profiles.yml#V5"
+    knowledge_state_ref: "knowledge/knowledge_evolution.yml#V5"
+    context:
+      organization: "初期設計者が異動し、運用保守チームへ移管"
+      delivery_pressure: high
+      source_of_truth: "COBOLコードと運用担当者の経験を優先"
+    events:
+      - event_id: EV-V05-TRANSFER-001
+        catalog_ref: ORG-EXPERT-TRANSFER
+        trigger: "初期設計者と査定システム主任が異動する"
+        constraints:
+          - "引継ぎ期間は2週間"
+          - "月次処理と障害対応を継続する必要がある"
+        decision:
+          action: "ジョブ再実行、障害連絡、主要プログラム一覧を優先して引き継ぐ"
+          rationale: "日常運用の継続に必要な情報を先に渡すため"
+        artifact_updates: { requirements: unchanged, original_design: unchanged, source_code: unchanged, tests: unchanged, operations_manual: partial }
+        knowledge_effect:
+          documented: ["主要ジョブと障害連絡先"]
+          tacit: ["商品横断で重複する査定段落", "例外再起票の承認条件"]
+          loss_risk: critical
+        mdi_effect: { locate: 2, analyze: 2, modify: 1, validate: 1, confidence: 4 }
+        depends_on: [EV-V04-PATCH-001]
+      - event_id: EV-V05-JAVA-QUERY-001
+        catalog_ref: TECH-JAVA-FRONT
+        trigger: "支社から契約進捗をWebブラウザで照会したい"
+        constraints:
+          - "COBOL査定と固定長ファイルは継続利用する"
+          - "照会機能には参照専用の複製データを使用する"
+        decision:
+          action: "Java Servlet/JDBCの照会画面と夜間データ複製処理を追加する"
+          rationale: "査定中核へ直接変更を加えずに利用者体験を改善するため"
+        artifact_updates: { requirements: full, original_design: partial, source_code: full, tests: partial, operations_manual: full }
+        knowledge_effect:
+          documented: ["照会DBの項目定義"]
+          tacit: ["夜間同期前は前日状態を表示すること", "COBOL空白値とDB NULLの変換"]
+          loss_risk: high
+        mdi_effect: { locate: 2, analyze: 2, modify: 2, validate: 2, confidence: 2 }
+        depends_on: [EV-V05-TRANSFER-001]
+
+  - version: V6
+    scenario_year: 2005
+    title: "Spring受付システムへの段階移行開始"
+    technical_profile_ref: "technical_constraints/version_profiles.yml#V6"
+    knowledge_state_ref: "knowledge/knowledge_evolution.yml#V6"
+    context:
+      organization: "Java刷新チームとCOBOL保守チームが別組織"
+      delivery_pressure: high
+      source_of_truth: "受付はSpring、最終査定はCOBOLの実装を基準とする"
+    events:
+      - event_id: EV-V06-SPRING-001
+        catalog_ref: TECH-SPRING-MIGRATION
+        trigger: "新契約受付をWeb化し、入力点検を即時化する"
+        constraints:
+          - "査定バッチは移行対象外"
+          - "固定長連携ファイルを正式インターフェースとして維持する"
+        decision:
+          action: "Springで受付と事務点検を実装し、夜間ファイルでCOBOL査定へ渡す"
+          rationale: "利用者向け機能から段階的に移行するため"
+        artifact_updates: { requirements: full, original_design: partial, source_code: full, tests: partial, operations_manual: full }
+        knowledge_effect:
+          documented: ["SpringとCOBOLのファイルインターフェース"]
+          tacit: ["両側に存在する年齢判定の優先関係", "再送時に受付番号を維持する条件"]
+          loss_risk: high
+        mdi_effect: { locate: 2, analyze: 3, modify: 2, validate: 3, confidence: 2 }
+        depends_on: [EV-V05-JAVA-QUERY-001]
+      - event_id: EV-V06-PERFORMANCE-001
+        catalog_ref: OPS-EMERGENCY-PATCH
+        trigger: "月末に受付ファイルの処理が夜間バッチ枠を超過する"
+        constraints:
+          - "オンライン停止時刻を変更できない"
+          - "翌朝までに査定キューを作成する必要がある"
+        decision:
+          action: "高額契約を後続ジョブへ分離し、商品別に並列処理する"
+          rationale: "通常案件の翌朝処理を優先するため"
+        artifact_updates: { requirements: unchanged, original_design: delta_only, source_code: full, tests: partial, operations_manual: full }
+        knowledge_effect:
+          documented: ["新しいジョブ順序"]
+          tacit: ["高額案件だけ結果反映が1営業日遅れること"]
+          loss_risk: high
+        mdi_effect: { locate: 2, analyze: 2, modify: 2, validate: 3, confidence: 2 }
+        depends_on: [EV-V06-SPRING-001]
+
+  - version: V7
+    scenario_year: 2010
+    title: "Springオンライン中心化とベンダ交代"
+    technical_profile_ref: "technical_constraints/version_profiles.yml#V7"
+    knowledge_state_ref: "knowledge/knowledge_evolution.yml#V7"
+    context:
+      organization: "Java担当ベンダ、COBOL担当ベンダ、業務部門の三者体制"
+      delivery_pressure: high
+      source_of_truth: "オンラインはSpring、夜間査定と契約原簿はCOBOL"
+    events:
+      - event_id: EV-V07-SPRING-PRIMARY-001
+        catalog_ref: TECH-SPRING-MIGRATION
+        trigger: "代理店チャネルを追加し、オンライン受付を主要経路にする"
+        constraints:
+          - "COBOL契約原簿と夜間査定は残す"
+          - "代理店固有権限を既存社員画面にも影響させない"
+        decision:
+          action: "Spring側へチャネル別サービスと権限制御を追加し、COBOLへ共通形式で連携する"
+          rationale: "オンライン機能をJava側へ集約しながら契約原簿を維持するため"
+        artifact_updates: { requirements: full, original_design: delta_only, source_code: full, tests: partial, operations_manual: full }
+        knowledge_effect:
+          documented: ["代理店権限表と共通連携形式"]
+          tacit: ["社員チャネルだけが使用するCOBOL既定値", "チャネル判定の二重実装"]
+          loss_risk: high
+        mdi_effect: { locate: 2, analyze: 3, modify: 2, validate: 3, confidence: 2 }
+        depends_on: [EV-V06-PERFORMANCE-001]
+      - event_id: EV-V07-VENDOR-001
+        catalog_ref: ORG-EXPERT-TRANSFER
+        trigger: "保守契約更改によりJava担当ベンダが交代する"
+        constraints:
+          - "旧ベンダとの並行期間は1か月"
+          - "COBOL側仕様は別契約のため引継ぎ対象外"
+        decision:
+          action: "Springソース、運用手順、未解決課題一覧を引き継ぐ"
+          rationale: "契約上の責任範囲に限定して移管するため"
+        artifact_updates: { requirements: unchanged, original_design: unchanged, source_code: unchanged, tests: unchanged, operations_manual: partial }
+        knowledge_effect:
+          documented: ["Springアプリの運用手順"]
+          tacit: ["COBOLとの責務境界", "連携エラー時の共同調査手順"]
+          loss_risk: critical
+        mdi_effect: { locate: 2, analyze: 3, modify: 1, validate: 2, confidence: 4 }
+        depends_on: [EV-V07-SPRING-PRIMARY-001]
+
+  - version: V8
+    scenario_year: 2015
+    title: "外部システム・複数組織連携"
+    technical_profile_ref: "technical_constraints/version_profiles.yml#V8"
+    knowledge_state_ref: "knowledge/knowledge_evolution.yml#V8"
+    context:
+      organization: "社内外の複数チームがインターフェース単位で担当"
+      delivery_pressure: very_high
+      source_of_truth: "接続先別仕様、Spring実装、運用手順を横断確認する必要がある"
+    events:
+      - event_id: EV-V08-EXTERNAL-001
+        catalog_ref: INT-EXTERNAL-COORDINATION
+        trigger: "契約内容照会、本人確認、代理店基盤と連携する"
+        constraints:
+          - "接続先ごとに通信方式とリリース日が異なる"
+          - "COBOLバッチは固定長ファイルのみ受け付ける"
+        decision:
+          action: "Spring内に接続先別アダプタ、共通中間形式、再送キューを追加する"
+          rationale: "中核査定への接続方式を一つに保つため"
+        artifact_updates: { requirements: delta_only, original_design: partial, source_code: full, tests: partial, operations_manual: full }
+        knowledge_effect:
+          documented: ["接続先別インターフェース仕様"]
+          tacit: ["再送順序", "重複応答を無視する条件", "組織間の責任分界"]
+          loss_risk: critical
+        mdi_effect: { locate: 2, analyze: 3, modify: 2, validate: 3, confidence: 3 }
+        depends_on: [EV-V07-VENDOR-001]
+
+  - version: V9
+    scenario_year: 2020
+    title: "監査証跡追加とSpring世代併存"
+    technical_profile_ref: "technical_constraints/version_profiles.yml#V9"
+    knowledge_state_ref: "knowledge/knowledge_evolution.yml#V9"
+    context:
+      organization: "監査部門主導。機能単位で複数の保守チームが担当"
+      delivery_pressure: fixed_deadline
+      source_of_truth: "複数ログ、Spring実装、COBOL結果ファイル、運用台帳が併存"
+    events:
+      - event_id: EV-V09-AUDIT-001
+        catalog_ref: AUD-CROSSCUTTING-TRACE
+        trigger: "全査定判断について入力、判定理由、操作者、時刻を追跡可能にする"
+        constraints:
+          - "監査開始日までに記録を開始する"
+          - "旧Spring、Spring Boot、COBOLを同時に対象とする"
+        decision:
+          action: "各世代の処理へ個別ログを追加し、夜間に監査DBへ集約する"
+          rationale: "既存機能の再構成を行わず監査対象を網羅するため"
+        artifact_updates: { requirements: full, original_design: delta_only, source_code: full, tests: partial, operations_manual: full }
+        knowledge_effect:
+          documented: ["ログ項目と保存期間"]
+          tacit: ["各ログの取引キー変換", "システム間時刻差の補正方法"]
+          loss_risk: high
+        mdi_effect: { locate: 2, analyze: 3, modify: 3, validate: 3, confidence: 2 }
+        depends_on: [EV-V08-EXTERNAL-001]
+      - event_id: EV-V09-BOOT-001
+        catalog_ref: TECH-SPRING-MIGRATION
+        trigger: "新しい本人確認連携だけを短期間で独立リリースする"
+        constraints:
+          - "既存Springモノリスのビルド周期に合わせられない"
+          - "共有DBスキーマは維持する"
+        decision:
+          action: "本人確認アダプタをSpring Bootアプリとして分離し、共有DBとメッセージで接続する"
+          rationale: "外部接続先のリリース周期へ合わせるため"
+        artifact_updates: { requirements: delta_only, original_design: delta_only, source_code: full, tests: partial, operations_manual: full }
+        knowledge_effect:
+          documented: ["新アプリのAPIと運用監視"]
+          tacit: ["共有DB更新順序", "旧モノリスへ戻す際の切替手順"]
+          loss_risk: high
+        mdi_effect: { locate: 2, analyze: 3, modify: 2, validate: 3, confidence: 2 }
+        depends_on: [EV-V09-AUDIT-001]
+
+  - version: V10
+    scenario_year: 2026
+    title: "AIを利用した設計復元とモダナイゼーション"
+    technical_profile_ref: "technical_constraints/version_profiles.yml#V10"
+    knowledge_state_ref: "knowledge/knowledge_evolution.yml#V10"
+    context:
+      organization: "刷新チーム。全世代を横断して説明できる担当者はいない"
+      delivery_pressure: controlled_discovery
+      source_of_truth: "稼働実績、コード、データ、テスト、断片文書を証拠として評価"
+    events:
+      - event_id: EV-V10-RECOVERY-001
+        catalog_ref: null
+        trigger: "商品変更を安全かつ継続的に行える状態へ移行する"
+        constraints:
+          - "COBOL、旧Spring、Spring Bootの振る舞いを維持する"
+          - "文書と実装が一致するとは仮定しない"
+        decision:
+          action: "AI支援のコード分析、現新比較、ゴールデンデータ、業務レビューで知識エッジを復元する"
+          rationale: "単一成果物を正解とせず、複数証拠から業務意図と実装動作を分離するため"
+        artifact_updates: { requirements: partial, original_design: history_only, source_code: partial, tests: full, operations_manual: partial }
+        knowledge_effect:
+          documented: ["復元したトレーサビリティ", "証拠ごとの確信度", "未解決の判断点"]
+          tacit: ["業務部門の例外判断をレビューで抽出"]
+          loss_risk: medium
+        mdi_effect: { locate: -2, analyze: -3, modify: -1, validate: -3, confidence: -3 }
+        depends_on: [EV-V09-BOOT-001]
+

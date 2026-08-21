@@ -1,0 +1,110 @@
+schema_version: 1
+graph_id: V01-NEW-BUSINESS-BASELINE-TRACE
+version: V1
+description: "V1新契約査定の業務・要件・設計・実装・テストを結ぶベースライン"
+
+nodes:
+  - node_id: BR-V1-DEF-001
+    type: business_rule
+    label: "不備照会30日猶予"
+    artifact: specification/business_specification/v01/new_business_business_rules_v01.md
+  - node_id: BR-V1-AUT-001
+    type: business_rule
+    label: "2,000万円以下標準体の一次決裁"
+    artifact: specification/business_specification/v01/new_business_business_rules_v01.md
+  - node_id: BR-V1-AUT-002
+    type: business_rule
+    label: "高額・社医回付案件の二次決裁"
+    artifact: specification/business_specification/v01/new_business_business_rules_v01.md
+  - node_id: BR-V1-RES-001
+    type: business_rule
+    label: "三要件と責任開始日"
+    artifact: specification/business_specification/v01/new_business_business_specification_v01.md
+  - node_id: DOC-REQ-V1-001
+    type: requirement
+    label: "V1要件定義"
+    artifact: specification/requirements/v01/new_business_system_requirements_v01.md
+  - node_id: DOC-EXT-V1-001
+    type: logical_design
+    label: "V1外部設計"
+    artifact: specification/external_design/v01/new_business_system_design_v01.md
+  - node_id: DOC-INT-V1-001
+    type: physical_design
+    label: "V1 COBOL詳細設計"
+    artifact: specification/internal_design/v01/new_business_cobol_design_v01.md
+  - node_id: PRG-V1-BAT-001
+    type: implementation
+    label: "NBASSESS"
+    artifact: implementation/v01/batch/NBASSESS.cbl
+  - node_id: GOLDEN-V1-NEWBUS-001
+    type: test
+    label: "V1ゴールデンデータ19件"
+    artifact: test/v01/cases/assessment_cases.csv
+
+edges:
+  - edge_id: E-V1-DEF-REQ
+    from_node: BR-V1-DEF-001
+    to_node: DOC-REQ-V1-001
+    edge_type: derived_from
+    valid_from_version: V1
+    valid_to_version: V1
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["DOC-BUS-002", "DOC-REQ-V1-001"]
+    rationale: "30日猶予をFR-V1-003へ展開"
+    holder_roles: ["新契約部査定課長", "初期設計者"]
+  - edge_id: E-V1-REQ-DESIGN
+    from_node: DOC-REQ-V1-001
+    to_node: DOC-EXT-V1-001
+    edge_type: derived_from
+    valid_from_version: V1
+    valid_to_version: V1
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["DOC-REQ-V1-001", "DOC-EXT-V1-001"]
+    rationale: "外部設計の全機能がV1要件を参照"
+    holder_roles: ["初期設計者"]
+  - edge_id: E-V1-DESIGN-IMPLEMENTATION
+    from_node: DOC-INT-V1-001
+    to_node: PRG-V1-BAT-001
+    edge_type: realized_by
+    valid_from_version: V1
+    valid_to_version: V1
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["DOC-INT-V1-001", "NBASSESS.cbl"]
+    rationale: "詳細設計の段落構造をCOBOLで実現"
+    holder_roles: ["初期設計者", "COBOL主任"]
+  - edge_id: E-V1-IMPLEMENTATION-TEST
+    from_node: PRG-V1-BAT-001
+    to_node: GOLDEN-V1-NEWBUS-001
+    edge_type: verified_by
+    valid_from_version: V1
+    valid_to_version: V1
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["DOC-VAL-V1-001", "assessment_cases.csv"]
+    rationale: "GnuCOBOL 3.2.0で19件を実行し、80文字固定長の期待結果と完全一致した"
+    holder_roles: ["COBOL主任", "テスト責任者"]
+  - edge_id: E-V1-AUTH-IMPLEMENTATION
+    from_node: BR-V1-AUT-002
+    to_node: PRG-V1-BAT-001
+    edge_type: realized_by
+    valid_from_version: V1
+    valid_to_version: V1
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["DOC-BUS-002", "3400-PROCESS-AUTHORITY"]
+    rationale: "高額・社医回付案件を二次決裁へ分岐"
+    holder_roles: ["新契約部査定課長", "COBOL主任"]
+  - edge_id: E-V1-RES-IMPLEMENTATION
+    from_node: BR-V1-RES-001
+    to_node: PRG-V1-BAT-001
+    edge_type: realized_by
+    valid_from_version: V1
+    valid_to_version: V1
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["DOC-BUS-001", "3550-SET-RESPONSIBILITY"]
+    rationale: "三要件の最遅日を責任開始日として出力"
+    holder_roles: ["査定担当者", "COBOL主任"]

@@ -1,0 +1,100 @@
+schema_version: 1
+graph_id: KG-V01-30DAY-GRACE
+title: "V1 不備解消30日猶予ルールの知識エッジ"
+valid_from_version: V1
+
+nodes:
+  - node_id: BUS-NEED-PENDING-CONTROL
+    type: business_concept
+    name: "不備案件の滞留防止"
+  - node_id: CONSTRAINT-POSTAL-LEADTIME
+    type: decision
+    name: "郵送と営業職員訪問に必要な期間"
+  - node_id: RULE-GRACE-30
+    type: business_rule
+    name: "不備起票から30日間の解消猶予"
+  - node_id: RULE-LAPSE-NEXT-DAY
+    type: business_rule
+    name: "30日超過後の翌営業日に自動失効"
+  - node_id: SPEC-BUS-RULE-V01
+    type: requirement
+    name: "V1ビジネスルール仕様書"
+    path: "specification/business_specification/v01/new_business_business_rules_v01.md"
+  - node_id: DESIGN-DELIBERATION-V01
+    type: decision
+    name: "V1設計検討・知識構造記録"
+    path: "specification/business_specification/v01/new_business_design_deliberation_v01.md"
+  - node_id: IMPL-DAY-LIMIT
+    type: implementation
+    name: "COBOLの猶予日数定数と失効判定段落"
+    path: "implementation/v01/batch/NBASSESS.cbl"
+    status: "3300-PROCESS-DEFICIENCY段落として実装済み"
+  - node_id: OP-EXCEPTION-REDATE
+    type: operation
+    name: "課長承認による例外的な不備起票日再設定"
+  - node_id: TEST-GRACE-BOUNDARY
+    type: test
+    name: "29日・30日・31日と翌営業日の境界試験"
+    path: "test/v01/cases/assessment_cases.csv"
+    status: "TC-V1-011〜013として定義済み"
+
+edges:
+  - edge_id: EDGE-30-001
+    from_node: BUS-NEED-PENDING-CONTROL
+    to_node: RULE-GRACE-30
+    edge_type: derived_from
+    knowledge_state: documented
+    confidence: confirmed
+    rationale: "滞留防止と顧客の書類準備期間を両立する"
+    evidence_refs: [DESIGN-DELIBERATION-V01]
+    holder_roles: ["新契約部査定課長"]
+
+  - edge_id: EDGE-30-002
+    from_node: CONSTRAINT-POSTAL-LEADTIME
+    to_node: RULE-GRACE-30
+    edge_type: derived_from
+    knowledge_state: documented
+    confidence: confirmed
+    rationale: "郵送2往復と営業職員の訪問・顧客準備期間を合算した"
+    evidence_refs: [DESIGN-DELIBERATION-V01]
+    holder_roles: ["新契約部査定課長", "営業事務担当"]
+
+  - edge_id: EDGE-30-003
+    from_node: RULE-GRACE-30
+    to_node: SPEC-BUS-RULE-V01
+    edge_type: realized_by
+    knowledge_state: documented
+    confidence: confirmed
+    rationale: "正式な数値基準として仕様書に記載する"
+    evidence_refs: [SPEC-BUS-RULE-V01]
+    holder_roles: ["新契約部"]
+
+  - edge_id: EDGE-30-004
+    from_node: RULE-GRACE-30
+    to_node: IMPL-DAY-LIMIT
+    edge_type: realized_by
+    knowledge_state: documented
+    confidence: confirmed
+    rationale: "30日定数と暦日差判定をCOBOL段落へ接続した"
+    evidence_refs: [IMPL-DAY-LIMIT]
+    holder_roles: ["COBOL主任"]
+
+  - edge_id: EDGE-30-005
+    from_node: RULE-GRACE-30
+    to_node: TEST-GRACE-BOUNDARY
+    edge_type: verified_by
+    knowledge_state: documented
+    confidence: confirmed
+    rationale: "29日・30日・31日のゴールデンケースをGnuCOBOL 3.2.0で実行し、期待値との一致を確認した"
+    evidence_refs: [TEST-GRACE-BOUNDARY]
+    holder_roles: ["テスト責任者"]
+
+  - edge_id: EDGE-30-006
+    from_node: OP-EXCEPTION-REDATE
+    to_node: RULE-GRACE-30
+    edge_type: exception_to
+    knowledge_state: tacit
+    confidence: probable
+    rationale: "入院や海外出張など、承認された特殊事情に限って猶予を延長する"
+    evidence_refs: [DESIGN-DELIBERATION-V01]
+    holder_roles: ["新契約部査定課長"]

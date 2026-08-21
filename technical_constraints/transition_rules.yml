@@ -1,0 +1,60 @@
+schema_version: 1
+description: "COBOLからJava/Springへの段階移行で維持する共通規則"
+
+rules:
+  - rule_id: TR-001
+    name: "全面置換を前提にしない"
+    applies_to: [V5, V6, V7, V8, V9]
+    level: required
+    rule: "移行対象と残存対象を機能単位で明示し、COBOL資産を理由なく除去しない"
+    rationale: "世代間の責務境界と知識移転の課題を教材として保持するため"
+
+  - rule_id: TR-002
+    name: "契約原簿の正本を明示する"
+    applies_to: [V1, V2, V3, V4, V5, V6, V7, V8, V9]
+    level: required
+    rule: "更新可能なデータストアが複数存在する場合、項目ごとの正本と同期時点を定義する"
+    rationale: "Java DBの参照値とCOBOL契約原簿の不一致を分析可能にするため"
+
+  - rule_id: TR-003
+    name: "固定長インターフェースの互換性"
+    applies_to: [V1, V2, V3, V4, V5, V6, V7, V8]
+    level: required
+    rule: "既存レコードの位置、桁数、符号、空白値の意味を変更するときは接続先イベントを伴う"
+    rationale: "一方のシステムだけでレコード形式を変更しないため"
+
+  - rule_id: TR-004
+    name: "文字・数値変換の証拠を残す"
+    applies_to: [V5, V6, V7, V8, V9]
+    level: required
+    rule: "文字コード、全半角、符号付き数値、ゼロ、空白、NULLの変換表をVersion単位で保持する"
+    rationale: "COBOLとJava間の境界動作を再現できるようにするため"
+
+  - rule_id: TR-005
+    name: "二重実装ルールを登録する"
+    applies_to: [V6, V7, V8, V9]
+    level: required
+    rule: "SpringとCOBOLの双方に存在する業務判定は、knowledgeエッジとして登録する"
+    rationale: "片側だけを変更した場合の影響を追跡するため"
+
+  - rule_id: TR-006
+    name: "日付時点再現性"
+    applies_to: [V4, V5, V6, V7, V8, V9, V10]
+    level: required
+    rule: "制度施行日前後の判定にシステム日時を直接使用せず、業務上の基準日を入力可能にする"
+    rationale: "過去契約の再査定と現新比較を可能にするため"
+
+  - rule_id: TR-007
+    name: "Version当時のテスト制約を保持する"
+    applies_to: [V1, V2, V3, V4, V5, V6, V7, V8, V9]
+    level: required
+    rule: "後世に追加した自動テストと、当時存在したテスト資産を区別する"
+    rationale: "当時の情報確信度を過大評価しないため"
+
+  - rule_id: TR-008
+    name: "V10の復元結果に確信度を付ける"
+    applies_to: [V10]
+    level: required
+    rule: "復元した仕様には根拠成果物、反証、確信度、未解決点を記録する"
+    rationale: "AIの推定を確定仕様として扱わないため"
+

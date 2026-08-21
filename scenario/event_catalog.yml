@@ -1,0 +1,230 @@
+schema_version: 1
+description: "Legacy Evolution Simulatorで再利用する変更イベントの型"
+
+artifact_update_states:
+  full: "原本と関連成果物をすべて更新する"
+  partial: "直接変更した箇所だけ更新する"
+  delta_only: "差分要求または追補資料だけを発行する"
+  history_only: "改訂履歴だけを更新し、本文は維持する"
+  unchanged: "対象成果物を更新しない"
+  verbal_only: "口頭、会議、電話等による共有だけを行う"
+  unknown: "後世から更新状況を確認できない"
+
+mdi_dimensions:
+  locate: "変更箇所特定難易度"
+  analyze: "影響範囲分析難易度"
+  modify: "修正実行難易度"
+  validate: "退行検証難易度"
+  confidence: "情報確信度・組織的エントロピー"
+
+event_types:
+  - catalog_id: BUS-PRODUCT-COPY
+    category: business
+    name: "既存商品コピーによる新商品追加"
+    typical_trigger: "販売開始日が固定された新商品または新契約種別の追加"
+    typical_constraints:
+      - "既存商品の再試験期間を確保できない"
+      - "共通化より局所修正の方が見積りやすい"
+    typical_decision:
+      action: "既存商品処理をコピーし、商品固有条件をIF文で追加する"
+      rationale: "既存商品の変更範囲と再試験範囲を限定するため"
+    likely_artifact_updates:
+      requirements: delta_only
+      original_design: unchanged
+      source_code: full
+      tests: partial
+      operations_manual: unchanged
+    likely_knowledge_effect:
+      tacit: "コピー元とコピー先で重複するルールの対応関係"
+      risk: high
+    default_mdi_effect: { locate: 1, analyze: 2, modify: 1, validate: 2, confidence: 2 }
+
+  - catalog_id: BUS-RIDER-PATCH
+    category: business
+    name: "既存レコードの未使用領域を使った特約追加"
+    typical_trigger: "主契約へ複数の特約を付加する"
+    typical_constraints:
+      - "固定長ファイルのレイアウトを拡張しにくい"
+      - "下流バッチとの互換性を維持する必要がある"
+    typical_decision:
+      action: "未使用領域とフラグを転用し、既存処理へ条件分岐を追加する"
+      rationale: "下流システムの同時改修を避けるため"
+    likely_artifact_updates:
+      requirements: full
+      original_design: partial
+      source_code: full
+      tests: partial
+      operations_manual: partial
+    likely_knowledge_effect:
+      tacit: "同一項目が商品によって異なる意味を持つ条件"
+      risk: medium
+    default_mdi_effect: { locate: 1, analyze: 1, modify: 1, validate: 2, confidence: 1 }
+
+  - catalog_id: REG-EFFECTIVE-DATE
+    category: regulation
+    name: "施行日固定の新旧ルール併存"
+    typical_trigger: "法令、監督指針または約款の改定"
+    typical_constraints:
+      - "施行日は延期できない"
+      - "施行日前の契約を旧基準で再現する必要がある"
+    typical_decision:
+      action: "契約日、受付日または告知日を条件に新旧判定ロジックを併存させる"
+      rationale: "過去契約の再査定と法的再現性を維持するため"
+    likely_artifact_updates:
+      requirements: delta_only
+      original_design: partial
+      source_code: full
+      tests: partial
+      operations_manual: partial
+    likely_knowledge_effect:
+      tacit: "どの日付を制度判定日に使用するかという例外規則"
+      risk: high
+    default_mdi_effect: { locate: 1, analyze: 3, modify: 2, validate: 3, confidence: 2 }
+
+  - catalog_id: DOC-DELTA-ONLY
+    category: documentation
+    name: "差分要件だけを残す"
+    typical_trigger: "短納期の保守開発または文書管轄部署との分離"
+    typical_constraints:
+      - "原本設計書の改訂審査に時間がかかる"
+      - "変更チームが原本の編集権限を持たない"
+    typical_decision:
+      action: "変更要求書、議事録または追補資料だけを発行する"
+      rationale: "リリース承認に必要な最低限の証跡を期限内に整えるため"
+    likely_artifact_updates:
+      requirements: delta_only
+      original_design: unchanged
+      source_code: full
+      tests: partial
+      operations_manual: unchanged
+    likely_knowledge_effect:
+      tacit: "原本と複数の差分資料を適用する正しい順序"
+      risk: high
+    default_mdi_effect: { locate: 1, analyze: 2, modify: 0, validate: 1, confidence: 3 }
+
+  - catalog_id: ORG-EXPERT-TRANSFER
+    category: organization
+    name: "有識者の異動と限定的な引継ぎ"
+    typical_trigger: "組織変更、退職、ベンダ交代または保守契約変更"
+    typical_constraints:
+      - "引継ぎ期間が短い"
+      - "日常運用が優先され、判断背景の整理時間がない"
+    typical_decision:
+      action: "障害対応手順と連絡先を優先して引き継ぐ"
+      rationale: "直近の運用継続に必要な情報を優先するため"
+    likely_artifact_updates:
+      requirements: unchanged
+      original_design: unchanged
+      source_code: unchanged
+      tests: unchanged
+      operations_manual: partial
+    likely_knowledge_effect:
+      tacit: "業務、設計、コード、データを結ぶ判断経路"
+      risk: critical
+    default_mdi_effect: { locate: 2, analyze: 2, modify: 1, validate: 1, confidence: 4 }
+
+  - catalog_id: TECH-JAVA-FRONT
+    category: technology
+    name: "COBOL中核を残したJavaフロント追加"
+    typical_trigger: "端末UI刷新、検索性向上またはオープン系技術の採用"
+    typical_constraints:
+      - "査定バッチを同時移行できない"
+      - "固定長ファイルを公式な受渡し形式として維持する"
+    typical_decision:
+      action: "受付・照会をJavaで構築し、COBOLへファイルまたはアダプタ連携する"
+      rationale: "利用者向け機能を先行して刷新するため"
+    likely_artifact_updates:
+      requirements: full
+      original_design: partial
+      source_code: full
+      tests: partial
+      operations_manual: partial
+    likely_knowledge_effect:
+      tacit: "Java項目とCOBOLレコード位置の変換規則"
+      risk: high
+    default_mdi_effect: { locate: 2, analyze: 3, modify: 2, validate: 2, confidence: 2 }
+
+  - catalog_id: TECH-SPRING-MIGRATION
+    category: technology
+    name: "Springオンライン処理への段階移行"
+    typical_trigger: "Java標準化、Web化または保守要員確保"
+    typical_constraints:
+      - "COBOLバッチと過去データは継続利用する"
+      - "全機能の一括移行は承認されない"
+    typical_decision:
+      action: "新規オンライン機能をSpringで実装し、既存査定はCOBOLへ委譲する"
+      rationale: "段階移行により業務リリースを継続するため"
+    likely_artifact_updates:
+      requirements: full
+      original_design: partial
+      source_code: full
+      tests: partial
+      operations_manual: full
+    likely_knowledge_effect:
+      tacit: "Spring側とCOBOL側の責務境界および二重実装されたルール"
+      risk: high
+    default_mdi_effect: { locate: 2, analyze: 3, modify: 2, validate: 3, confidence: 2 }
+
+  - catalog_id: OPS-EMERGENCY-PATCH
+    category: operations
+    name: "障害対応の局所パッチ"
+    typical_trigger: "本番障害、誤査定または処理期限超過"
+    typical_constraints:
+      - "次回バッチまたは翌営業日までに対応する必要がある"
+      - "広範な回帰試験を実施できない"
+    typical_decision:
+      action: "該当データ条件だけを扱う例外分岐を既存処理へ追加する"
+      rationale: "影響対象を限定して業務を再開するため"
+    likely_artifact_updates:
+      requirements: unchanged
+      original_design: unchanged
+      source_code: full
+      tests: partial
+      operations_manual: history_only
+    likely_knowledge_effect:
+      tacit: "パッチ条件を一般化してはいけない業務上の理由"
+      risk: critical
+    default_mdi_effect: { locate: 1, analyze: 2, modify: 2, validate: 3, confidence: 3 }
+
+  - catalog_id: INT-EXTERNAL-COORDINATION
+    category: integration
+    name: "複数組織による外部システム連携"
+    typical_trigger: "契約照会、本人確認、代理店または監査基盤との連携"
+    typical_constraints:
+      - "接続先ごとにリリース日と責任分界が異なる"
+      - "再送、重複、順序逆転を考慮する必要がある"
+    typical_decision:
+      action: "接続先別の変換、再送、エラー保留処理を追加する"
+      rationale: "相手側仕様とリリース計画へ個別に適合するため"
+    likely_artifact_updates:
+      requirements: delta_only
+      original_design: partial
+      source_code: full
+      tests: partial
+      operations_manual: full
+    likely_knowledge_effect:
+      tacit: "障害時の責任分界とデータ再送順序"
+      risk: high
+    default_mdi_effect: { locate: 2, analyze: 3, modify: 2, validate: 3, confidence: 2 }
+
+  - catalog_id: AUD-CROSSCUTTING-TRACE
+    category: audit
+    name: "監査証跡の横断追加"
+    typical_trigger: "査定理由、操作者、変更前後値の保存要求"
+    typical_constraints:
+      - "既存画面、バッチ、ファイルを同時に対象とする"
+      - "監査期限までに記録を開始する必要がある"
+    typical_decision:
+      action: "各処理へ個別に証跡出力を追加し、共通化は後続課題とする"
+      rationale: "監査対象範囲を期限内に満たすため"
+    likely_artifact_updates:
+      requirements: full
+      original_design: delta_only
+      source_code: full
+      tests: partial
+      operations_manual: full
+    likely_knowledge_effect:
+      tacit: "複数ログを同一取引として突合するキーと時刻差"
+      risk: high
+    default_mdi_effect: { locate: 2, analyze: 3, modify: 3, validate: 3, confidence: 2 }
+

@@ -1,0 +1,105 @@
+schema_version: 1
+model_id: LEGACY-KNOWLEDGE-GRAPH
+description: "Legacy Evolution Simulatorの知識ノードとレイヤー間エッジの共通モデル"
+
+node_types:
+  business_concept: "契約、商品、査定、告知などの業務概念"
+  business_rule: "年齢、金額、医学的条件、期限などの判断規則"
+  decision: "採用案、却下案、制約、判断理由"
+  requirement: "機能要件、非機能要件、変更要求、差分要件"
+  logical_design: "機能、エンティティ、状態、業務フロー"
+  physical_design: "ファイル位置、DB列、コード値、ジョブ、インターフェース"
+  implementation: "COBOL段落、Javaクラス、Spring Bean、設定、スクリプト"
+  test: "テストケース、期待値、ゴールデンデータ、現新比較結果"
+  operation: "手順、ジョブ運用、補正、再送、例外承認"
+  organization: "部署、役割、ベンダ、責任分界"
+  event: "Versionへ適用された業務・組織・技術イベント"
+  evidence: "ログ、実績データ、議事録、障害票、コミット履歴"
+
+edge_types:
+  derived_from: "下位成果物が上位要求または判断から導かれる"
+  realized_by: "業務ルールまたは設計が実装で実現される"
+  stored_in: "業務概念または状態が物理データへ格納される"
+  invoked_by: "処理が画面、ジョブ、イベントから呼び出される"
+  verified_by: "仕様または実装動作がテストで検証される"
+  operated_by: "機能または例外処理を特定役割が運用する"
+  decided_by: "判断が組織または役割により行われる"
+  supersedes: "新しい規則や成果物が以前のものを置き換える"
+  coexists_with: "新旧ルール、実装またはデータ形式が同時に有効である"
+  copied_from: "実装または文書が別成果物を複製して作られる"
+  transformed_to: "データが世代間またはシステム間で変換される"
+  exception_to: "正式ルールに対する承認済みまたは非公式な例外である"
+  evidenced_by: "主張が文書、データ、ログ、コード等の証拠に支えられる"
+
+knowledge_states:
+  documented:
+    rank: 1
+    description: "正式文書に対応関係と判断理由が記載されている"
+  inferable:
+    rank: 2
+    description: "命名、構造、参照関係、テストから人が合理的に推論できる"
+  ai_recoverable:
+    rank: 3
+    description: "複数成果物を横断することでAIが候補を提示できる"
+  tacit:
+    rank: 4
+    description: "有識者または特定運用チームだけが対応関係を説明できる"
+  unconfirmed:
+    rank: 5
+    description: "存在した可能性はあるが、現時点で確認可能な証拠が不足している"
+
+confidence_levels:
+  confirmed:
+    score_range: [0.90, 1.00]
+    requirements:
+      - "独立した二つ以上の証拠が一致する"
+      - "重要な反証が解消されている"
+  probable:
+    score_range: [0.70, 0.89]
+    requirements:
+      - "主要証拠が一致するが一部未確認点がある"
+  plausible:
+    score_range: [0.40, 0.69]
+    requirements:
+      - "説明可能な候補だが代替解釈が残る"
+  unknown:
+    score_range: [0.00, 0.39]
+    requirements:
+      - "証拠不足または証拠間の相違が大きい"
+
+evidence_kinds:
+  - kind: executed_behavior
+    use: "特定入力に対する現行実装の動作確認"
+    limitation: "業務上望ましい動作であるとは限らない"
+  - kind: production_history
+    use: "実運用で受け入れられてきたデータと例外の確認"
+    limitation: "発生していない境界条件は確認できない"
+  - kind: automated_test
+    use: "明示された期待値と反復可能な検証"
+    limitation: "期待値の由来が不明な場合がある"
+  - kind: specification
+    use: "正式な業務意図と承認経路の確認"
+    limitation: "更新時点以降の差分が反映されていない場合がある"
+  - kind: source_code
+    use: "処理分岐、データ利用、呼出し関係の確認"
+    limitation: "判断理由と非システム運用は直接表現されない"
+  - kind: expert_interview
+    use: "判断背景、例外、成果物間の対応関係の確認"
+    limitation: "記憶の時点と対象Versionを区別する必要がある"
+  - kind: incident_record
+    use: "例外条件、影響範囲、暫定対応の確認"
+    limitation: "恒久仕様か局所対応かを追加確認する必要がある"
+
+required_edge_fields:
+  - edge_id
+  - from_node
+  - to_node
+  - edge_type
+  - valid_from_version
+  - valid_to_version
+  - knowledge_state
+  - confidence
+  - evidence_refs
+  - rationale
+  - holder_roles
+

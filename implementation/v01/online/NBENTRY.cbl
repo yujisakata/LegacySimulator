@@ -1,0 +1,124 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. NBENTRY.
+       AUTHOR. V1-NEW-BUSINESS-TEAM.
+
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT OPTIONAL APPLICATION-FILE
+               ASSIGN TO "APPLICATION.DAT"
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS WS-FILE-STATUS.
+
+       DATA DIVISION.
+       FILE SECTION.
+       FD  APPLICATION-FILE
+           RECORD CONTAINS 120 CHARACTERS.
+           COPY "NBAPPL.cpy".
+
+       WORKING-STORAGE SECTION.
+       01  WS-FILE-STATUS                  PIC XX VALUE SPACES.
+       01  WS-VALID-FLAG                   PIC X VALUE "Y".
+       01  WS-AGE                          PIC 99 VALUE ZERO.
+       01  WS-AMOUNT                       PIC 9(8) VALUE ZERO.
+
+       PROCEDURE DIVISION.
+       0000-MAIN.
+           INITIALIZE APPLICATION-RECORD
+           PERFORM 1000-ACCEPT-INPUT
+           PERFORM 2000-VALIDATE-INPUT
+           IF WS-VALID-FLAG = "Y"
+               PERFORM 3000-WRITE-RECORD
+           ELSE
+               MOVE 8 TO RETURN-CODE
+           END-IF
+           STOP RUN.
+
+       1000-ACCEPT-INPUT.
+           DISPLAY "APPLICATION NUMBER (10 DIGITS): "
+               WITH NO ADVANCING
+           ACCEPT APP-NUMBER
+           DISPLAY "APPLICATION DATE (YYYYMMDD): "
+               WITH NO ADVANCING
+           ACCEPT APP-APPLICATION-DATE
+           DISPLAY "DISCLOSURE DATE (YYYYMMDD): "
+               WITH NO ADVANCING
+           ACCEPT APP-DISCLOSURE-DATE
+           DISPLAY "PREMIUM DATE (YYYYMMDD OR ZERO): "
+               WITH NO ADVANCING
+           ACCEPT APP-PREMIUM-DATE
+           DISPLAY "RECEIPT DATE (YYYYMMDD): "
+               WITH NO ADVANCING
+           ACCEPT APP-RECEIPT-DATE
+           DISPLAY "PROCESS DATE (YYYYMMDD): "
+               WITH NO ADVANCING
+           ACCEPT APP-PROCESS-DATE
+           DISPLAY "DEFICIENCY DATE (YYYYMMDD OR ZERO): "
+               WITH NO ADVANCING
+           ACCEPT APP-DEFICIENCY-DATE
+           DISPLAY "AGE: " WITH NO ADVANCING
+           ACCEPT APP-AGE-TEXT
+           DISPLAY "DEATH BENEFIT AMOUNT (YEN): "
+               WITH NO ADVANCING
+           ACCEPT APP-AMOUNT-TEXT
+           DISPLAY "PRODUCT (WL): " WITH NO ADVANCING
+           ACCEPT APP-PRODUCT-CODE
+           DISPLAY "DOCUMENT COMPLETE (Y/N): "
+               WITH NO ADVANCING
+           ACCEPT APP-DOCUMENT-COMPLETE
+           DISPLAY "MEDICAL CLASS (S/M): "
+               WITH NO ADVANCING
+           ACCEPT APP-MEDICAL-CLASS
+           DISPLAY "MANAGER DECISION (A/P/D/BLANK): "
+               WITH NO ADVANCING
+           ACCEPT APP-MANAGER-DECISION
+           DISPLAY "WITHDRAWAL (Y/N): " WITH NO ADVANCING
+           ACCEPT APP-WITHDRAWAL
+           MOVE SPACES TO APP-RESERVED.
+
+       2000-VALIDATE-INPUT.
+           IF APP-NUMBER IS NOT NUMERIC
+               DISPLAY "ERROR: APPLICATION NUMBER"
+               MOVE "N" TO WS-VALID-FLAG
+           END-IF
+           IF APP-PRODUCT-CODE NOT = "WL"
+               DISPLAY "ERROR: V1 PRODUCT MUST BE WL"
+               MOVE "N" TO WS-VALID-FLAG
+           END-IF
+           IF APP-AGE-TEXT IS NUMERIC
+               MOVE APP-AGE-TEXT TO WS-AGE
+               IF WS-AGE < 15 OR WS-AGE > 65
+                   DISPLAY "ERROR: AGE MUST BE 15 THROUGH 65"
+                   MOVE "N" TO WS-VALID-FLAG
+               END-IF
+           ELSE
+               DISPLAY "ERROR: AGE MUST BE NUMERIC"
+               MOVE "N" TO WS-VALID-FLAG
+           END-IF
+           IF APP-AMOUNT-TEXT IS NUMERIC
+               MOVE APP-AMOUNT-TEXT TO WS-AMOUNT
+               IF WS-AMOUNT = ZERO OR WS-AMOUNT > 50000000
+                   DISPLAY "ERROR: AMOUNT MUST BE 1 THROUGH 50000000"
+                   MOVE "N" TO WS-VALID-FLAG
+               END-IF
+           ELSE
+               DISPLAY "ERROR: AMOUNT MUST BE NUMERIC"
+               MOVE "N" TO WS-VALID-FLAG
+           END-IF.
+
+       3000-WRITE-RECORD.
+           OPEN EXTEND APPLICATION-FILE
+           IF WS-FILE-STATUS = "00"
+               WRITE APPLICATION-RECORD
+               IF WS-FILE-STATUS = "00"
+                   DISPLAY "APPLICATION REGISTERED: " APP-NUMBER
+                   MOVE 0 TO RETURN-CODE
+               ELSE
+                   DISPLAY "ERROR: WRITE STATUS " WS-FILE-STATUS
+                   MOVE 12 TO RETURN-CODE
+               END-IF
+               CLOSE APPLICATION-FILE
+           ELSE
+               DISPLAY "ERROR: OPEN STATUS " WS-FILE-STATUS
+               MOVE 12 TO RETURN-CODE
+           END-IF.

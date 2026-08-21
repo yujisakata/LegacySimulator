@@ -1,0 +1,180 @@
+schema_version: 1
+profile_id: NEW-BUSINESS-KNOWLEDGE-EVOLUTION
+description: "V1〜V10における組織知、文書化、推論可能性の変化"
+metric_note: >-
+  edge_health_indexは教材用の相対指標であり、完全な知識グラフの実測値ではない。
+  100は主要な業務・設計・実装・テスト・運用の対応関係を組織が説明できる状態を表す。
+
+versions:
+  V1:
+    edge_health_index: 100
+    dominant_state: documented
+    holder_roles: ["新契約部査定課長", "初期設計者", "COBOL主任", "テスト責任者"]
+    documented_edges:
+      - "終身保険の業務ルールからCOBOL査定段落への対応"
+      - "申込状態から契約原簿レコードへの対応"
+      - "主要ルールからテストケースへの対応"
+    tacit_edges:
+      - "30日猶予が郵送と訪問頻度に由来すること"
+      - "2,000万円決裁境界の経営的意図"
+      - "課長承認による不備起票日の例外的な再設定"
+    newly_unconfirmed: []
+    recovery_evidence: ["V1業務仕様", "V1設計検討記録", "COBOLソース", "V1テスト仕様"]
+    related_events: [EV-V01-BASELINE-001]
+
+  V2:
+    edge_health_index: 91
+    dominant_state: documented
+    holder_roles: ["初期設計者", "COBOL主任", "商品担当者"]
+    documented_edges:
+      - "特約コードから査定条件への対応"
+      - "特約追加差分から変更COBOL段落への対応"
+    tacit_edges:
+      - "空白とゼロをともに特約なしとして扱う互換条件"
+      - "固定長レコードの未使用領域を選択した理由"
+    newly_unconfirmed:
+      - "全下流ジョブが未使用領域を無視するという確認範囲"
+    recovery_evidence: ["特約要件", "COPY句差分", "証券発行結果", "結合テスト"]
+    related_events: [EV-V02-RIDER-001]
+
+  V3:
+    edge_health_index: 78
+    dominant_state: inferable
+    holder_roles: ["COBOL主任", "医療保険商品担当者"]
+    documented_edges:
+      - "医療保険固有ルールから差分設計への対応"
+    tacit_edges:
+      - "終身保険と医療保険で重複した査定段落の一覧"
+      - "原本、特約追補、商品差分を適用する順序"
+      - "コピー後に削除した終身保険条件の理由"
+    newly_unconfirmed:
+      - "共通ルール変更時に修正すべき全商品プログラム"
+      - "原本設計のどの記述が医療保険にも有効か"
+    recovery_evidence: ["類似COBOL比較", "差分要件", "商品別テスト", "リリース議事録"]
+    related_events: [EV-V03-MEDICAL-COPY-001, EV-V03-DOC-001]
+
+  V4:
+    edge_health_index: 66
+    dominant_state: inferable
+    holder_roles: ["法改正対応リーダー", "COBOL主任", "査定事務担当者"]
+    documented_edges:
+      - "施行日から新告知項目への対応"
+      - "障害票から緊急パッチへの対応"
+    tacit_edges:
+      - "受付日と告知日が制度日をまたぐ場合の優先順位"
+      - "一部支社だけが再告知フラグを手入力すること"
+    newly_unconfirmed:
+      - "例外分岐が対象とする支社と商品組合せの全体"
+      - "旧判定をいつまで保持する必要があるか"
+    recovery_evidence: ["施行通知", "COBOL日付分岐", "障害票", "境界日テストデータ"]
+    related_events: [EV-V04-REGULATION-001, EV-V04-PATCH-001]
+
+  V5:
+    edge_health_index: 49
+    dominant_state: tacit
+    holder_roles: ["保守リーダー", "COBOL運用担当", "Java照会担当"]
+    documented_edges:
+      - "COBOL固定長項目からJava照会DB列への変換"
+      - "主要ジョブから運用手順への対応"
+    tacit_edges:
+      - "商品横断の重複査定段落"
+      - "照会値が前日状態になる業務上の許容範囲"
+      - "空白、ゼロ、NULLを変換する例外条件"
+    newly_unconfirmed:
+      - "30日猶予と決裁境界の当初判断理由を説明できる役割"
+      - "非公式な再起票運用の承認基準"
+    recovery_evidence: ["引継書", "COBOL-Java変換表", "夜間同期ログ", "過去問い合わせ記録"]
+    related_events: [EV-V05-TRANSFER-001, EV-V05-JAVA-QUERY-001]
+
+  V6:
+    edge_health_index: 42
+    dominant_state: tacit
+    holder_roles: ["Spring受付チーム", "COBOL保守チーム", "運用統括"]
+    documented_edges:
+      - "Spring受付項目からCOBOL固定長位置への変換"
+      - "Java受付締めからCOBOLジョブ開始への運用連携"
+    tacit_edges:
+      - "JavaとCOBOLに二重実装された年齢・商品判定"
+      - "高額案件だけ結果反映が遅れること"
+      - "再送時に同一受付番号を使う条件"
+    newly_unconfirmed:
+      - "二重判定が相違した場合にどちらを優先するか"
+      - "Java受付DBとCOBOL契約原簿の項目別正本"
+    recovery_evidence: ["固定長IF仕様", "Spring XML設定", "COBOL取込段落", "運用ジョブ表"]
+    related_events: [EV-V06-SPRING-001, EV-V06-PERFORMANCE-001]
+
+  V7:
+    edge_health_index: 34
+    dominant_state: tacit
+    holder_roles: ["Java新ベンダ", "COBOL別ベンダ", "代理店業務担当", "運用統括"]
+    documented_edges:
+      - "代理店権限からSpring画面・サービスへの対応"
+      - "共通連携形式からCOBOL取込への対応"
+    tacit_edges:
+      - "社員チャネルだけに設定されるCOBOL既定値"
+      - "SpringとCOBOLの責務境界"
+      - "連携エラー時に二社が調査を開始する順序"
+    newly_unconfirmed:
+      - "旧Java照会機能が参照するデータとSpring画面の差異"
+      - "旧ベンダが口頭で管理していたSpring設定理由"
+    recovery_evidence: ["Springソース", "COBOL連携結果", "ベンダ引継書", "運用問い合わせ履歴"]
+    related_events: [EV-V07-SPRING-PRIMARY-001, EV-V07-VENDOR-001]
+
+  V8:
+    edge_health_index: 27
+    dominant_state: ai_recoverable
+    holder_roles: ["接続先別チーム", "Spring保守ベンダ", "COBOL保守ベンダ", "統合運用"]
+    documented_edges:
+      - "外部項目から接続先別アダプタへの対応"
+      - "再送操作から運用手順への対応"
+    tacit_edges:
+      - "接続先別の重複排除条件"
+      - "複数組織の障害責任分界"
+      - "再送キューとCOBOL受付順序の関係"
+    newly_unconfirmed:
+      - "共通中間形式の各項目がどの外部原典を優先するか"
+      - "一部手動補正が後続再送へ与える影響"
+    recovery_evidence: ["外部IF仕様", "アダプタコード", "再送ログ", "障害記録", "COBOL結果ファイル"]
+    related_events: [EV-V08-EXTERNAL-001]
+
+  V9:
+    edge_health_index: 21
+    dominant_state: ai_recoverable
+    holder_roles: ["旧Springチーム", "Spring Bootチーム", "COBOLチーム", "監査運用"]
+    documented_edges:
+      - "各システムのログ項目から監査DB列への対応"
+      - "Spring BootアダプタのAPIと外部接続への対応"
+    tacit_edges:
+      - "複数ログを同一取引として突合する変換キー"
+      - "システム間時刻差の補正方法"
+      - "共有DB更新時の旧SpringとSpring Bootの順序制約"
+    newly_unconfirmed:
+      - "監査ログと実際の最終査定理由が一致しない例外条件"
+      - "旧モノリスへ切り戻す際に必要な全手順"
+    recovery_evidence: ["監査DB", "複数システムログ", "共有DB履歴", "API試験", "運用台帳"]
+    related_events: [EV-V09-AUDIT-001, EV-V09-BOOT-001]
+
+  V10:
+    edge_health_index_at_start: 21
+    target_edge_health_index: 75
+    dominant_state_at_start: ai_recoverable
+    holder_roles: ["刷新チーム", "業務レビュー担当", "各世代の保守担当", "AI分析支援"]
+    recovery_priorities:
+      - "商品・特約・制度日から全実装箇所への対応"
+      - "Java DB、COBOL契約原簿、監査DBの項目別正本"
+      - "SpringとCOBOLに二重実装された判定と優先関係"
+      - "公式仕様と運用例外の区別"
+      - "現行動作と将来も維持すべき業務動作の区別"
+    recovery_method:
+      - "静的解析で呼出し、データ、類似コードの候補エッジを生成する"
+      - "ゴールデンデータで現行動作を観測する"
+      - "仕様、ログ、障害票、ヒアリングを独立証拠として突合する"
+      - "確信度と未解決点を業務レビューへ提示する"
+      - "承認されたエッジから特性テストと再構築設計を作る"
+    acceptance_conditions:
+      - "重要業務ルールが実装、データ、テストへ追跡可能"
+      - "制度日時点の主要ケースを再現可能"
+      - "未確認エッジが可視化され、変更判断時に参照可能"
+      - "特定個人だけに依存する重要エッジが残っていない"
+    related_events: [EV-V10-RECOVERY-001]
+
