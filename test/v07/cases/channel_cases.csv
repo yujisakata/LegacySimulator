@@ -1,0 +1,5 @@
+case_id,channel,agency_id,owner_agency_id,expected_allowed,expected_default
+V7-01,EMPLOYEE,,,true,OF
+V7-02,AGENCY,A000000001,A000000001,true,AG
+V7-03,AGENCY,A000000001,A000000002,false,AG
+V7-04,AGENCY,,A000000002,false,AG

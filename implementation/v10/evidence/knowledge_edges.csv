@@ -1,0 +1,17 @@
+edge_id,from_artifact,to_artifact,version,requirement_evidence,design_evidence,code_evidence,test_evidence,contradicted
+EDGE-V01-001,FR-V1-010,NEWASMT,V1,true,true,true,true,false
+EDGE-V02-001,FR-V2-009,NBASSESS,V2,true,true,true,true,false
+EDGE-V03-001,FR-V3-001,MDASSESS,V3,true,true,true,true,false
+EDGE-V04-001,V4-FR-002,RGASSESS,V4,true,true,true,true,false
+EDGE-V05-001,V5-NFR-001,InquirySnapshotService,V5,true,true,true,true,false
+EDGE-V06-001,V6-FR-004,BatchLaneSelector,V6,true,true,true,true,false
+EDGE-V06-FIX-001,V6-FIX-001,EntryValidationService,V6,true,true,true,true,false
+EDGE-V07-001,V7-OPS-001,ScheduleCheckpoint,V7,true,true,true,true,false
+EDGE-V07-FIX-001,V7-FIX-001,ScheduleCoordinationService,V7,true,true,true,true,false
+EDGE-V08-001,V8-FR-004,DuplicateResponseGuard,V8,true,true,true,true,false
+EDGE-V08-FIX-001,V8-FIX-001,RetryDispatchJob,V8,true,true,true,true,false
+EDGE-V08-FIX-002,V8-FIX-002,integration-context-v08.xml,V8,true,true,true,true,false
+EDGE-V09-001,V9-FR-002,AuditTimeNormalizer,V9,true,true,true,true,false
+EDGE-V09-FIX-001,V9-FIX-001,GenerationAuditEmitter,V9,true,true,true,true,false
+EDGE-V09-FIX-002,V9-FIX-002,OutboxPublishJob,V9,true,true,true,true,false
+EDGE-V10-001,推定された例外承認条件,運用ヒアリング,V10,false,false,false,true,true

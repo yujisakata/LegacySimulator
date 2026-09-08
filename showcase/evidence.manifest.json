@@ -1,0 +1,405 @@
+{
+  "title": "Legacy Evolution",
+  "subtitle": "業務要求から実装・検証までを実物で辿る",
+  "roadmap": [
+    {
+      "id": "v1", "version": "V1", "year": "1980",
+      "businessRequirement": "終身保険の新契約受付と査定を機械化し、急増する申込を標準的に処理する。",
+      "additionalRequirements": ["紙申込のオンライン登録", "不備・年齢・保険金額・決裁条件の査定", "夜間処理と結果ファイル作成"],
+      "summary": "COBOLオンラインと夜間バッチを120/80文字の固定長ファイルで接続する初期基準。", "status": "implemented"
+    },
+    {
+      "id": "v2", "version": "V2", "year": "1985",
+      "businessRequirement": "災害死亡特約と入院特約を6か月後に同時発売する。",
+      "additionalRequirements": ["AD・HI特約の受付と査定", "V1主契約結果との組合せ制御", "V1データと下流レイアウトの互換維持"],
+      "summary": "既存位置を維持し、予約領域へ特約項目を配置してCOBOLへ局所分岐を追加。", "status": "implemented"
+    },
+    {
+      "id": "v3", "version": "V3", "year": "1990",
+      "businessRequirement": "医療保険・がん保険を3か月で販売開始する。",
+      "additionalRequirements": ["MI・CIの商品別年齢条件", "商品別保障額・決裁条件", "既存事務処理と結果コードの継承"],
+      "summary": "終身保険COBOLを商品別に複製し、差分別冊と局所試験で短期発売に対応。", "status": "implemented"
+    },
+    {
+      "id": "v4", "version": "V4", "year": "1995",
+      "businessRequirement": "新しい告知制度を施行日から適用し、旧契約の再査定も再現する。",
+      "additionalRequirements": ["受付日・告知日による新旧基準切替", "新告知項目の追加", "再告知案件だけ告知日を優先する例外判定"],
+      "summary": "新旧COBOL段落を併存させ、施行日判定と緊急補正分岐を追加する。", "status": "implemented"
+    },
+    {
+      "id": "v5", "version": "V5", "year": "2000",
+      "businessRequirement": "有識者異動後も運用を継続し、支社から契約進捗をWeb照会できるようにする。",
+      "additionalRequirements": ["主要ジョブ・障害対応の短期引継ぎ", "Java Servlet/JDBCの照会画面", "照会DBへの夜間複製と空白・NULL変換"],
+      "summary": "COBOL査定を維持したまま、参照専用DBとJava照会を追加して二層構成へ移行。", "status": "implemented"
+    },
+    {
+      "id": "v6", "version": "V6", "year": "2005",
+      "businessRequirement": "新契約受付をWeb化し、入力点検を即時化するとともに月末処理を翌朝までに終える。",
+      "additionalRequirements": ["Springによる受付・事務点検", "固定長ファイルによるCOBOL査定連携", "高額契約の後続ジョブ分離と商品別並列処理"],
+      "summary": "利用者機能からSpringへ段階移行し、夜間枠超過にはジョブ分割で対応する。", "status": "implemented"
+    },
+    {
+      "id": "v7", "version": "V7", "year": "2010",
+      "businessRequirement": "代理店チャネルを追加してオンライン受付を主要経路とし、ベンダ交代後も保守を継続する。",
+      "additionalRequirements": ["チャネル別サービスと代理店権限制御", "COBOLへの共通連携形式", "Spring資産・運用手順・未解決課題の移管"],
+      "summary": "オンライン機能をSpringへ集約する一方、夜間査定と契約原簿はCOBOLで継続。", "status": "implemented"
+    },
+    {
+      "id": "v8", "version": "V8", "year": "2015",
+      "businessRequirement": "契約内容照会、本人確認、代理店基盤を、異なる方式・日程の外部システムと連携する。",
+      "additionalRequirements": ["接続先別アダプタ", "共通中間形式", "再送キュー・重複応答制御・責任分界"],
+      "summary": "Springを外部連携ハブとし、COBOL中核へ渡す方式を固定長連携に一本化する。", "status": "implemented"
+    },
+    {
+      "id": "v9", "version": "V9", "year": "2020",
+      "businessRequirement": "全査定判断の入力・理由・操作者・時刻を追跡し、新しい本人確認連携を短期リリースする。",
+      "additionalRequirements": ["旧Spring・Spring Boot・COBOLの個別監査ログ", "監査DBへの夜間集約", "本人確認アダプタのSpring Boot分離とメッセージ連携"],
+      "summary": "既存処理を再構成せず監査を横断追加し、外部連携の一部を独立アプリ化する。", "status": "implemented"
+    },
+    {
+      "id": "v10", "version": "V10", "year": "2026",
+      "businessRequirement": "商品変更を安全かつ継続的に行える状態へ移行する。",
+      "additionalRequirements": ["AI支援による複数世代コード分析", "現新比較とゴールデンデータ検証", "業務レビュー、確信度、未解決判断点の管理"],
+      "summary": "単一資料を正解とせず、稼働実績・コード・データ・試験・文書から意図と動作を復元する。", "status": "implemented"
+    }
+  ],
+  "constraintRoadmap": [
+    {
+      "id": "v1", "version": "V1", "year": "1980",
+      "technicalConstraints": ["ANSI COBOL・JCL相当を使用", "固定長ファイルとCOPY句で連携", "夜間バッチ枠と下流レイアウトを維持"],
+      "developmentState": "新規構築・基準確立",
+      "developmentEnvironment": "専任開発チームと査定部門が同席し、設計・実装・試験を同期更新。",
+      "deliveryOperations": "通常納期。ロードモジュール配布、ジョブ結合試験、結果帳票の目視確認。"
+    },
+    {
+      "id": "v2", "version": "V2", "year": "1985",
+      "technicalConstraints": ["V1の120/80文字と既存位置を維持", "Javaとレコード全面再設計は対象外", "変更プログラム単位で配布"],
+      "developmentState": "既存COBOLへの局所拡張",
+      "developmentEnvironment": "初期チームが保守を継続。証券発行バッチは別部署が所管。",
+      "deliveryOperations": "高い納期圧力・6か月。修正箇所と主要な主契約・特約組合せを試験。"
+    },
+    {
+      "id": "v3", "version": "V3", "year": "1990",
+      "technicalConstraints": ["商品共通基盤の新設は対象外", "固定長位置を商品別に再定義", "全面回帰を伴う共通化は対象外"],
+      "developmentState": "商品別COBOL複製・差分設計",
+      "developmentEnvironment": "商品部主導で開発者は複数案件を兼務。原本設計の本文編集権限なし。",
+      "deliveryOperations": "非常に高い納期圧力・3か月。商品別配布、新商品中心の部分試験。"
+    },
+    {
+      "id": "v4", "version": "V4", "year": "1995",
+      "technicalConstraints": ["旧判定段落を保存", "システム日付だけで過去契約を判定しない", "新告知項目は予約領域へ格納"],
+      "developmentState": "制度日別ロジック併存・緊急補正",
+      "developmentEnvironment": "法務・商品・保守の横断チーム。施行通知、追補設計、実装を突合。",
+      "deliveryOperations": "施行日固定。翌日査定までの補正と、施行日前後・再告知の境界試験。"
+    },
+    {
+      "id": "v5", "version": "V5", "year": "2000",
+      "technicalConstraints": ["更新はCOBOL、Javaは参照専用", "固定長からRDBへ夜間一方向変換", "空白・ゼロ・NULL変換を維持"],
+      "developmentState": "COBOL中核＋Java照会の二層化",
+      "developmentEnvironment": "初期設計者が異動し運用保守へ移管。引継ぎ2週間、COBOLとJavaは別チーム。",
+      "deliveryOperations": "高い納期圧力。月次運用を継続し、COBOLとJavaを別々に配布・試験。"
+    },
+    {
+      "id": "v6", "version": "V6", "year": "2005",
+      "technicalConstraints": ["COBOL査定バッチは継続", "Java–COBOL間の固定長IFを維持", "年齢・商品・必須判定が両側に存在"],
+      "developmentState": "Spring受付への段階移行・ジョブ分割",
+      "developmentEnvironment": "Java刷新チームとCOBOL保守チームが別組織。XML設定中心のSpring環境。",
+      "deliveryOperations": "高い納期圧力。月末も夜間枠を維持し、高額案件を後続ジョブへ分離。"
+    },
+    {
+      "id": "v7", "version": "V7", "year": "2010",
+      "technicalConstraints": ["Spring MVCモノリスとCOBOLが併存", "Java内部表と固定長の二重モデル", "別スケジューラの連携を運用監視"],
+      "developmentState": "Springオンライン中心化・ベンダ移管",
+      "developmentEnvironment": "Javaベンダ、COBOLベンダ、業務部門の三者体制。旧ベンダとの並行は1か月。",
+      "deliveryOperations": "高い納期圧力。JavaとCOBOLを別リリースし、結合日を会議で調整。"
+    },
+    {
+      "id": "v8", "version": "V8", "year": "2015",
+      "technicalConstraints": ["SOAP・ESB・キュー・SFTP・固定長が混在", "接続先の一斉移行を前提にしない", "再送順序と重複排除を接続先別に管理"],
+      "developmentState": "Spring連携ハブ・外部接続拡大",
+      "developmentEnvironment": "社内外の複数チームがIF単位で担当。通信方式とリリース日が接続先ごとに異なる。",
+      "deliveryOperations": "非常に高い納期圧力。接続先別の結合・手動再送試験を行い、全接続先同時試験は行わない。"
+    },
+    {
+      "id": "v9", "version": "V9", "year": "2020",
+      "technicalConstraints": ["旧Spring・Spring Boot・COBOL・監査DBが併存", "共有DBを一括分離しない", "複数システムの時刻差を補正"],
+      "developmentState": "多世代併存・監査横断追加",
+      "developmentEnvironment": "監査部門主導で、機能単位の複数保守チームが担当。",
+      "deliveryOperations": "監査開始日が固定。モノリス定例とBoot個別リリース、監査ログ突合を併用。"
+    },
+    {
+      "id": "v10", "version": "V10", "year": "2026",
+      "technicalConstraints": ["COBOL・旧Java・Spring・Bootの現行動作を保持", "根拠のない整理や一律自動変換は対象外", "既存形式を保存し意味マッピングを別管理"],
+      "developmentState": "再構築前の調査・知識復元",
+      "developmentEnvironment": "全世代を横断説明できる担当者がいない刷新チーム。Java 21等の解析・比較環境を利用。",
+      "deliveryOperations": "管理された調査期間。現新比較と業務承認後に切替を検討し、確信度を記録。"
+    }
+  ],
+  "complexityRoadmap": [
+    {
+      "id": "v1", "version": "V1", "year": "1980", "featureCount": 10, "mdi": 10, "edgeHealth": 100,
+      "effects": { "locate": 0, "analyze": 0, "modify": 0, "validate": 0, "confidence": 0 },
+      "changeReason": "基準Version。業務・設計・実装・テストの対応を同じチームが説明でき、変更箇所と検証範囲を直接追跡できる。"
+    },
+    {
+      "id": "v2", "version": "V2", "year": "1985", "featureCount": 12, "mdi": 13, "edgeHealth": 91,
+      "effects": { "locate": 1, "analyze": 1, "modify": 1, "validate": 2, "confidence": 1 },
+      "changeReason": "特約を予約領域と既存COBOLへ局所追加したため、主契約×特約の組合せ試験と、下流が予約領域を参照していないことの確認が増えた。"
+    },
+    {
+      "id": "v3", "version": "V3", "year": "1990", "featureCount": 15, "mdi": 18, "edgeHealth": 78,
+      "effects": { "locate": 2, "analyze": 4, "modify": 1, "validate": 3, "confidence": 5 },
+      "changeReason": "商品別COBOL複製と差分別冊により、共通ルールの所在、原本との読順、コピー先も含む回帰範囲を判断する必要が生じた。"
+    },
+    {
+      "id": "v4", "version": "V4", "year": "1995", "featureCount": 17, "mdi": 26, "edgeHealth": 66,
+      "effects": { "locate": 2, "analyze": 5, "modify": 4, "validate": 6, "confidence": 5 },
+      "changeReason": "施行日前後の新旧段落と再告知例外が併存し、商品だけでなく受付日・告知日・例外フラグを含む時点別検証が必要になった。"
+    },
+    {
+      "id": "v5", "version": "V5", "year": "2000", "featureCount": 20, "mdi": 41, "edgeHealth": 49,
+      "effects": { "locate": 4, "analyze": 4, "modify": 3, "validate": 3, "confidence": 6 },
+      "changeReason": "初期有識者の異動に加え、COBOL原簿とJava照会DBが併存したため、前日状態や空白・NULL変換を誰が説明できるかという情報確信度が低下した。"
+    },
+    {
+      "id": "v6", "version": "V6", "year": "2005", "featureCount": 22, "mdi": 63, "edgeHealth": 42,
+      "effects": { "locate": 4, "analyze": 5, "modify": 4, "validate": 6, "confidence": 4 },
+      "changeReason": "SpringとCOBOLへ判定が二重実装され、固定長変換、夜間境界、高額案件のジョブ分離まで一つの変更で確認する範囲が広がった。"
+    },
+    {
+      "id": "v7", "version": "V7", "year": "2010", "featureCount": 25, "mdi": 81, "edgeHealth": 34,
+      "effects": { "locate": 4, "analyze": 6, "modify": 3, "validate": 5, "confidence": 6 },
+      "changeReason": "代理店チャネルと二重データモデルに加え、Java・COBOLの別ベンダ化で責務境界と共同調査順序が暗黙知になった。"
+    },
+    {
+      "id": "v8", "version": "V8", "year": "2015", "featureCount": 28, "mdi": 110, "edgeHealth": 27,
+      "effects": { "locate": 2, "analyze": 3, "modify": 2, "validate": 3, "confidence": 3 },
+      "changeReason": "外部接続先ごとに方式・リリース日・再送条件・責任分界が異なり、単一システム内では完結しない影響分析と結合検証が必要になった。"
+    },
+    {
+      "id": "v9", "version": "V9", "year": "2020", "featureCount": 30, "mdi": 150, "edgeHealth": 21,
+      "effects": { "locate": 4, "analyze": 6, "modify": 5, "validate": 6, "confidence": 4 },
+      "changeReason": "旧Spring・Spring Boot・COBOL・監査DBを横断してログを追加し、共有DB、取引キー、システム間時刻差を突合する必要が生じた。"
+    },
+    {
+      "id": "v10", "version": "V10", "year": "2026", "featureCount": 32, "mdi": 240, "edgeHealth": 21, "targetEdgeHealth": 75,
+      "effects": { "locate": -2, "analyze": -3, "modify": -1, "validate": -3, "confidence": -3 },
+      "changeReason": "開始時はV1～V9の全資産と断片知識が累積しMDIが最大。AI分析、現新比較、ゴールデンデータ、業務レビューで5次元を低減し、知識接続を75まで回復する目標を置く。"
+    }
+  ],
+  "versions": [
+    {
+      "id": "v1",
+      "label": "V1",
+      "year": "1980",
+      "title": "整合した出発点",
+      "eyebrow": "BASELINE",
+      "releaseWindow": "初期構築",
+      "testSummary": "19件",
+      "implementation": "単一COBOL",
+      "event": "終身保険の新契約受付と査定を機械化する",
+      "decision": "COBOLオンライン処理と夜間バッチを、120文字・80文字の固定長ファイルで接続する。",
+      "rationale": "当時の標準技術と、紙書類・郵送・夜間運用に適合するため。",
+      "impact": "業務ルール、要件、設計、実装、テストの対応関係を一つの基準として確認できる。",
+      "artifactState": "要件・設計・ソース・テストを全量更新",
+      "knowledgeRisk": "LOW",
+      "detail": {
+        "headline": "手作業中心の査定を、郵送と夜間運用に合わせて標準化",
+        "background": "申込急増に対し、紙書類の回収から査定・結果作成までをメインフレームへ移行する。郵送日数、限られた査定医、夜間バッチ枠が判断の前提となった。",
+        "adoptionSummary": "30日猶予と2,000万円の決裁境界を採用し、固定長オンライン・バッチとして実装した。",
+        "decisionGroups": [
+          {
+            "title": "不備解消猶予期間",
+            "question": "顧客対応時間を確保しつつ、未決案件の滞留をどう抑えるか",
+            "options": [
+              { "id": "A", "label": "14日厳格処理", "benefit": "未決案件を早期に整理できる", "concern": "郵送往復と顧客訪問を考えると手続が間に合わない", "status": "rejected" },
+              { "id": "B", "label": "30日猶予＋翌営業日自動失効", "benefit": "郵送2往復と顧客の書類準備期間を確保できる", "concern": "期限直前まで書類が戻らない案件が残る", "status": "selected", "reason": "郵送12日と訪問・準備約18日を合わせた、当時の現場運用上の最小合理日数だった。" },
+              { "id": "C", "label": "無期限・担当者手動催促", "benefit": "顧客離脱を抑えられる", "concern": "追跡事務が増え、契約放置を招く", "status": "rejected" }
+            ]
+          },
+          {
+            "title": "査定決裁権限境界",
+            "question": "限られた査定医を、どの案件へ集中させるか",
+            "options": [
+              { "id": "A", "label": "全件を査定医・課長が二重決裁", "benefit": "医的・環境リスクを全件で確認できる", "concern": "査定医が処理上の制約となり、2営業日の目標を超える", "status": "rejected" },
+              { "id": "B", "label": "2,000万円以下の標準体は担当者単独決裁", "benefit": "標準体を迅速に処理し、高額・既往症案件へ専門家を集中できる", "concern": "単独決裁の見逃しを基準表の厳格化で補う必要がある", "status": "selected", "reason": "当時の年収・住宅取得水準から、2,000万円超を集中管理すべき経営的警戒線と評価した。" }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        { "kind": "業務", "text": "紙の申込書と郵送を前提に、新契約査定を機械化" },
+        { "kind": "開発", "text": "専任開発チームと査定部門が同席して設計" },
+        { "kind": "技術", "text": "メインフレーム資源、固定長ファイル、夜間バッチ枠" }
+      ],
+      "evidence": [
+        { "id": "v1-event", "stage": "設計判断", "label": "V1設計検討記録", "path": "specification/business_specification/v01/new_business_design_deliberation_v01.md", "start": 1, "end": 47, "note": "背景、制約、全検討案と採用理由を記録" },
+        { "id": "v1-constraint", "stage": "技術制約", "label": "V1技術ベースライン", "path": "specification/technical_baseline/v01/technical_baseline_v01.md", "start": 1, "end": 36, "note": "当時採用可能な技術と運用上限を文書化" },
+        { "id": "v1-requirement", "stage": "要件", "label": "V1要件定義", "path": "specification/requirements/v01/new_business_system_requirements_v01.md", "start": 1, "end": 58, "note": "業務ルールを機能・非機能要件へ展開" },
+        { "id": "v1-design", "stage": "設計", "label": "V1外部設計", "path": "specification/external_design/v01/new_business_system_design_v01.md", "start": 1, "end": 60, "note": "構成、機能、固定長レコードを定義" },
+        { "id": "v1-code", "stage": "COBOL", "label": "NBASSESS査定制御", "path": "implementation/v01/batch/NBASSESS.cbl", "start": 165, "end": 225, "note": "取下げ優先と入力点検を実装" },
+        { "id": "v1-test", "stage": "テスト", "label": "V1試験仕様", "path": "specification/validation_history/v01/test_specification_v01.md", "start": 1, "end": 65, "note": "19件の境界・業務ケース" }
+      ]
+    },
+    {
+      "id": "v2",
+      "label": "V2",
+      "year": "1985",
+      "title": "特約販売開始",
+      "eyebrow": "LOCAL EXTENSION",
+      "releaseWindow": "6か月",
+      "testSummary": "53件",
+      "implementation": "予約領域＋IF",
+      "event": "災害死亡特約と入院特約を同時発売する",
+      "decision": "レコード長と既存位置を維持し、予約領域へ特約項目を割り当てて既存査定へ局所分岐を追加する。",
+      "rationale": "別部署所管の証券発行バッチを含む下流レイアウトの同時改訂を避けるため。",
+      "impact": "空白とゼロの互換条件、予約領域を選んだ理由、下流の確認範囲が新たな知識になる。",
+      "artifactState": "要件・ソースは全量、原本設計と試験は部分更新",
+      "knowledgeRisk": "MEDIUM",
+      "detail": {
+        "headline": "6か月の発売期限と下流互換を、予約領域の再定義で両立",
+        "background": "災害死亡特約と入院特約を同時発売する一方、証券発行バッチは別部署所管だった。固定長レイアウトの全面変更には、下流ジョブ・帳票・運用の同時調整が必要だった。",
+        "adoptionSummary": "案Bを採用。120/80文字と既存位置を維持し、予約領域へ特約項目を配置して主契約承諾後に局所分岐を追加した。",
+        "decisionGroups": [
+          {
+            "title": "特約情報の連携方式",
+            "question": "既存契約と下流処理を維持しながら、二つの特約をどう追加するか",
+            "options": [
+              { "id": "A", "label": "固定長レコードを拡張", "benefit": "項目の意味が明確で、将来の追加余地も作れる", "concern": "下流バッチ、帳票、保管領域を同時変更する必要がある", "status": "rejected" },
+              { "id": "B", "label": "V1予約領域へ特約項目を格納", "benefit": "レコード長と既存位置を維持し、V1データも利用できる", "concern": "予約領域を参照する下流処理の確認が必要", "status": "selected", "reason": "6か月の販売期限、別部署所管の下流、既存データ互換を同時に満たせる唯一の案だった。" },
+              { "id": "C", "label": "特約専用の別ファイルを新設", "benefit": "主契約レコードを変更しない", "concern": "ファイル間不一致、到着順、再処理の運用が増える", "status": "rejected" },
+              { "id": "D", "label": "共通ルールエンジンへ再構成", "benefit": "商品・特約間の重複を抑えられる", "concern": "6か月以内に全面回帰試験を完了できない", "status": "rejected" }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        { "kind": "業務", "text": "二つの特約を6か月で同時発売" },
+        { "kind": "開発", "text": "初期チームが保守も担当し、原本と差分を併読" },
+        { "kind": "技術", "text": "120/80文字と既存項目位置を維持。下流は別部署" }
+      ],
+      "evidence": [
+        { "id": "v2-event", "stage": "設計判断", "label": "V2設計検討記録", "path": "specification/business_specification/v02/new_business_design_deliberation_v02.md", "start": 1, "end": 39, "note": "6か月、下流別所管、全4案と局所追加の判断" },
+        { "id": "v2-constraint", "stage": "技術制約", "label": "V2技術ベースライン", "path": "specification/technical_baseline/v02/technical_baseline_v02.md", "start": 1, "end": 26, "note": "固定長下位互換と局所追加方針を文書化" },
+        { "id": "v2-requirement", "stage": "要件", "label": "V2追加要件", "path": "specification/requirements/v02/new_business_additional_requirements_v02.md", "start": 1, "end": 72, "note": "二つの特約とV1互換を定義" },
+        { "id": "v2-design", "stage": "設計", "label": "V2固定長設計", "path": "specification/external_design/v02/new_business_system_design_delta_v02.md", "start": 15, "end": 72, "note": "予約領域内の物理位置と結果コード" },
+        { "id": "v2-code-layout", "stage": "COBOL", "label": "V2 COPY句差分", "path": "implementation/v02/copybook/NBAPPL.cpy", "start": 1, "end": 26, "note": "旧予約領域をDELで残し、特約項目を追加" },
+        { "id": "v2-code-rule", "stage": "COBOL", "label": "V2特約査定", "path": "implementation/v02/batch/NBASSESS.cbl", "start": 487, "end": 550, "note": "ADD範囲として追加された実査定処理" },
+        { "id": "v2-test", "stage": "テスト", "label": "V2テスト成績", "path": "specification/validation_history/v02/test_result_v02.md", "start": 1, "end": 42, "note": "V1互換19件とV2代表34件" }
+      ]
+    },
+    {
+      "id": "v3",
+      "label": "V3",
+      "year": "1990",
+      "title": "商品別複製",
+      "eyebrow": "PRODUCT COPY",
+      "releaseWindow": "3か月",
+      "testSummary": "32件",
+      "implementation": "商品別COBOL",
+      "event": "医療保険・がん保険を短期間で追加する",
+      "decision": "終身保険査定の共通処理をMDASSESSへ複製し、商品固有の年齢・保障額・決裁条件へ置き換える。",
+      "rationale": "既存商品への変更範囲を限定し、3か月の販売開始に間に合わせるため。",
+      "impact": "共通判定が複数ソースへ分散し、原本・V2追補・V3別冊の読順が保守知識になる。",
+      "artifactState": "差分要件・別冊設計・全量商品別ソース・部分試験",
+      "knowledgeRisk": "HIGH",
+      "detail": {
+        "headline": "3か月の販売開始を、商品別複製による影響局所化で実現",
+        "background": "医療保険MI・がん保険CIを短期間で追加する。複数案件を兼務し、V1原本の本文編集権限がなく、共通化に必要な全商品回帰も期限内には実施できなかった。",
+        "adoptionSummary": "商品別複製案を採用。NBENTRY・NBASSESSの共通事務処理をMDENTRY・MDASSESSへ複製し、MI・CI固有条件へ置き換えた。",
+        "decisionGroups": [
+          {
+            "title": "医療系商品の実装方式",
+            "question": "3か月で販売を開始し、既存商品への変更範囲をどう限定するか",
+            "options": [
+              { "id": "A", "label": "商品別COBOLへ複製", "benefit": "既存商品の変更とリリース試験を局所化できる", "concern": "共通段落が複数ソースへ重複し、将来は両方の調査が必要", "status": "selected", "reason": "原本編集権限と全面回帰の時間がない中で、3か月の販売開始に対応できた。" },
+              { "id": "B", "label": "全商品共通査定へ再構成", "benefit": "共通処理を一元化できる", "concern": "期限内に設計承認と全面回帰を完了できない", "status": "rejected" },
+              { "id": "C", "label": "V2 NBASSESSへ直接分岐を追加", "benefit": "配布対象を一つに維持できる", "concern": "既存商品の変更範囲と試験範囲が広がる", "status": "rejected" },
+              { "id": "D", "label": "可変長商品属性ファイルを新設", "benefit": "商品属性を柔軟に表現できる", "concern": "下流と共通ファイルの同時改訂が必要", "status": "rejected" }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        { "kind": "業務", "text": "医療保険を3か月後に販売開始" },
+        { "kind": "開発", "text": "複数案件を兼務。原本設計の本文編集権限なし" },
+        { "kind": "技術", "text": "商品共通基盤と全面回帰を伴う共通化は採用不可" }
+      ],
+      "evidence": [
+        { "id": "v3-event", "stage": "設計判断", "label": "V3設計検討記録", "path": "specification/business_specification/v03/medical_design_deliberation_v03.md", "start": 1, "end": 27, "note": "商品別複製の採用案と採用しなかった全3案" },
+        { "id": "v3-constraint", "stage": "技術制約", "label": "V3技術ベースライン", "path": "specification/technical_baseline/v03/technical_baseline_v03.md", "start": 1, "end": 24, "note": "商品別複製と部分試験の前提を文書化" },
+        { "id": "v3-requirement", "stage": "要件", "label": "V3追加要件", "path": "specification/requirements/v03/medical_additional_requirements_v03.md", "start": 1, "end": 58, "note": "MI・CI固有条件と別冊方針" },
+        { "id": "v3-design", "stage": "設計", "label": "V3外部設計別冊", "path": "specification/external_design/v03/medical_product_design_addendum_v03.md", "start": 1, "end": 72, "note": "原本を維持した商品別の物理設計" },
+        { "id": "v3-code-age", "stage": "COBOL", "label": "V3商品・年齢分岐", "path": "implementation/v03/batch/MDASSESS.cbl", "start": 190, "end": 226, "note": "WL条件をDELで残し、MI・CI条件へ置換" },
+        { "id": "v3-code-rule", "stage": "COBOL", "label": "V3保障額・決裁分岐", "path": "implementation/v03/batch/MDASSESS.cbl", "start": 349, "end": 405, "note": "商品別条件が複製先へ局所化" },
+        { "id": "v3-test", "stage": "テスト", "label": "V3テスト成績", "path": "specification/validation_history/v03/test_result_v03.md", "start": 1, "end": 48, "note": "V3 32件と後世のV1～V3回帰" }
+      ]
+    },
+    {
+      "id": "v4", "label": "V4", "year": "1995", "title": "制度日時点管理", "eyebrow": "TEMPORAL RULES",
+      "releaseWindow": "施行日固定", "testSummary": "COBOL 8件", "implementation": "新旧COBOL段落",
+      "event": "告知制度を施行日から適用し、旧契約の再査定も再現する",
+      "decision": "受付日を原則とし、再告知案件だけ告知日を優先して新旧段落を呼び分ける。",
+      "rationale": "申込途中で制度日をまたぐ契約と、翌日までの緊急補正を同時に扱うため。",
+      "impact": "商品条件に制度日時点と例外フラグが加わり、境界値の組合せが増える。",
+      "artifactState": "差分要件・追補設計・全量COBOL・境界試験", "knowledgeRisk": "HIGH",
+      "detail": { "headline": "新旧制度を共存させ、再告知だけ適用日を切り替える", "background": "施行日は変更できず、旧契約の再査定結果も再現する必要があった。", "adoptionSummary": "旧段落を残し、受付日原則・再告知時は告知日優先を採用した。", "decisionGroups": [{ "title": "制度基準日の選択", "question": "制度日をまたぐ案件をどう判定するか", "options": [{ "id": "A", "label": "受付日だけを使用", "benefit": "規則が単純", "concern": "施行日後の再告知を新基準で扱えない", "status": "rejected" }, { "id": "B", "label": "再告知時だけ告知日優先", "benefit": "対象を限定して制度適用を補正できる", "concern": "境界試験が増える", "status": "selected", "reason": "通常案件の再現性と再告知の制度適合を両立するため。" }] }] },
+      "constraints": [{ "kind": "業務", "text": "施行日固定、旧契約再査定を再現" }, { "kind": "開発", "text": "法務・商品・保守の横断チーム" }, { "kind": "技術", "text": "旧段落を削除せず予約領域へ新項目を追加" }],
+      "evidence": [{ "id": "v4-event", "stage": "設計判断", "label": "V4設計判断", "path": "specification/business_specification/v04/regulatory_design_deliberation_v04.md", "start": 1, "end": 80, "note": "適用日と緊急補正の検討案" }, { "id": "v4-requirement", "stage": "要件", "label": "V4追加要件", "path": "specification/requirements/v04/regulatory_additional_requirements_v04.md", "start": 1, "end": 80, "note": "制度境界と再告知要件" }, { "id": "v4-design", "stage": "設計", "label": "V4外部設計", "path": "specification/external_design/v04/regulatory_effective_date_design_v04.md", "start": 1, "end": 80, "note": "80文字入出力と適用日" }, { "id": "v4-code", "stage": "COBOL", "label": "RGASSESS", "path": "implementation/v04/batch/RGASSESS.cbl", "start": 1, "end": 220, "note": "日本語変更コメント付き新旧判定" }, { "id": "v4-entry", "stage": "COBOL", "label": "RGENTRY", "path": "implementation/v04/online/RGENTRY.cbl", "start": 1, "end": 180, "note": "新旧告知と再告知の端末登録" }, { "id": "v4-jcl", "stage": "JCL", "label": "RGJOB04", "path": "implementation/v04/jcl/RGJOB04.jcl", "start": 1, "end": 80, "note": "抽出・査定・監査のジョブ順" }, { "id": "v4-test", "stage": "テスト", "label": "V4テスト成績", "path": "specification/validation_history/v04/test_result_v04.md", "start": 1, "end": 40, "note": "実コンパイル8件" }]
+    },
+    {
+      "id": "v5", "label": "V5", "year": "2000", "title": "Java参照層", "eyebrow": "JAVA QUERY",
+      "releaseWindow": "引継ぎ2週間", "testSummary": "変換4件", "implementation": "COBOL＋Java照会",
+      "event": "有識者異動後も運用し、支社から進捗をWeb照会する", "decision": "夜間固定長を参照専用DBへ一方向複製し、Javaは照会だけを行う。", "rationale": "COBOL中核の更新責任を維持したままWeb照会を提供するため。", "impact": "前夜時点と空白・ゼロ・NULL変換が新しい運用知識になる。", "artifactState": "追加要件・Java実ソース・SQL・運用・変換試験", "knowledgeRisk": "CRITICAL",
+      "detail": { "headline": "更新系をCOBOLに残し、Javaを参照専用で追加", "background": "初期設計者の異動とWeb照会要求が同時に発生した。", "adoptionSummary": "夜間複製案を採用し、基準日と値変換を明示した。", "decisionGroups": [{ "title": "照会データ取得方式", "question": "COBOLへの影響を限定してWeb照会をどう提供するか", "options": [{ "id": "A", "label": "原簿を直接照会", "benefit": "最新状態を表示", "concern": "中核の責任範囲が広がる", "status": "rejected" }, { "id": "B", "label": "夜間複製DB", "benefit": "更新系と参照系を分離", "concern": "前夜時点となる", "status": "selected", "reason": "中核査定を維持しながら支社照会を実現するため。" }] }] },
+      "constraints": [{ "kind": "業務", "text": "照会値は前夜時点の場合がある" }, { "kind": "開発", "text": "有識者異動、引継ぎ2週間" }, { "kind": "技術", "text": "Javaから契約原簿を更新しない" }],
+      "evidence": [{ "id": "v5-event", "stage": "設計判断", "label": "V5設計判断", "path": "specification/business_specification/v05/inquiry_design_deliberation_v05.md", "start": 1, "end": 60, "note": "直接照会と夜間複製を比較" }, { "id": "v5-requirement", "stage": "要件", "label": "V5追加要件", "path": "specification/requirements/v05/java_inquiry_additional_requirements_v05.md", "start": 1, "end": 60, "note": "参照専用と値変換" }, { "id": "v5-design", "stage": "設計", "label": "V5外部設計", "path": "specification/external_design/v05/java_inquiry_external_design_v05.md", "start": 1, "end": 60, "note": "40文字入力" }, { "id": "v5-code", "stage": "Java", "label": "固定長変換", "path": "implementation/v05/java/com/legacysimulator/v05/FixedLengthInquiryConverter.java", "start": 1, "end": 120, "note": "空白・ゼロ・NULL変換" }, { "id": "v5-servlet", "stage": "Java", "label": "照会Servlet", "path": "implementation/v05/java/com/legacysimulator/v05/ContractInquiryServlet.java", "start": 1, "end": 140, "note": "支社向けHTTP入口" }, { "id": "v5-dao", "stage": "Java", "label": "参照専用JDBC DAO", "path": "implementation/v05/java/com/legacysimulator/v05/JdbcInquiryDao.java", "start": 1, "end": 160, "note": "照会DBだけをSELECT" }, { "id": "v5-import", "stage": "Java", "label": "夜間取込Job", "path": "implementation/v05/java/com/legacysimulator/v05/SnapshotImportJob.java", "start": 1, "end": 180, "note": "照会用複製DBの全件入替" }, { "id": "v5-test", "stage": "テスト", "label": "V5テスト成績", "path": "specification/validation_history/v05/test_result_v05.md", "start": 1, "end": 40, "note": "実施範囲と未実施範囲" }]
+    },
+    {
+      "id": "v6", "label": "V6", "year": "2005", "title": "Spring段階移行", "eyebrow": "SPRING ENTRY",
+      "releaseWindow": "月末夜間枠", "testSummary": "受付5件・正式商品コード", "implementation": "Spring受付＋COBOL",
+      "event": "受付をWeb化し入力点検を即時化する", "decision": "Spring受付とCOBOL査定を80文字の夜間ファイルで接続し、高額案件を後続へ分離する。", "rationale": "利用者機能を先行移行し、通常案件の翌朝処理を優先するため。", "impact": "年齢・商品点検が二重化し、夜間境界とジョブ分離が加わる。", "artifactState": "Spring世代Java・XML・固定長・境界試験", "knowledgeRisk": "HIGH",
+      "detail": { "headline": "受付だけをSpringへ移し、査定はCOBOLへ接続", "background": "即時点検が求められる一方、査定バッチは移行対象外だった。", "adoptionSummary": "段階移行と2,000万円境界のジョブ分離を採用した。", "decisionGroups": [{ "title": "移行範囲", "question": "Web価値を早く提供しながら査定をどう扱うか", "options": [{ "id": "A", "label": "査定も同時移行", "benefit": "Javaへ統一", "concern": "期限内の検証量が多い", "status": "rejected" }, { "id": "B", "label": "受付のみ段階移行", "benefit": "既存査定を維持", "concern": "ルールが二重になる", "status": "selected", "reason": "利用者価値と移行リスクを分離するため。" }] }] },
+      "constraints": [{ "kind": "業務", "text": "入力点検を即時化" }, { "kind": "開発", "text": "JavaとCOBOLが別組織" }, { "kind": "技術", "text": "査定バッチと固定長IFを維持" }],
+      "evidence": [{ "id": "v6-event", "stage": "設計判断", "label": "V6設計判断", "path": "specification/business_specification/v06/spring_entry_design_deliberation_v06.md", "start": 1, "end": 60, "note": "移行範囲と性能案" }, { "id": "v6-requirement", "stage": "要件", "label": "V6追加要件", "path": "specification/requirements/v06/spring_entry_additional_requirements_v06.md", "start": 1, "end": 60, "note": "受付・80文字・高額分離" }, { "id": "v6-design", "stage": "設計", "label": "V6内部設計", "path": "specification/internal_design/v06/spring_entry_internal_design_v06.md", "start": 1, "end": 60, "note": "責務分割" }, { "id": "v6-code", "stage": "Java", "label": "受付Workflow", "path": "implementation/v06/java/com/legacysimulator/v06/EntryWorkflowService.java", "start": 1, "end": 140, "note": "即時点検と受付保存" }, { "id": "v6-repository", "stage": "Java", "label": "受付JDBC Repository", "path": "implementation/v06/java/com/legacysimulator/v06/JdbcEntryRepository.java", "start": 1, "end": 200, "note": "状態遷移を条件付き更新" }, { "id": "v6-batch", "stage": "Java", "label": "COBOL出力Batch", "path": "implementation/v06/java/com/legacysimulator/v06/CobolExportBatch.java", "start": 1, "end": 180, "note": "通常・高額ファイル分離" }, { "id": "v6-test", "stage": "テスト", "label": "V6テスト成績", "path": "specification/validation_history/v06/test_result_v06.md", "start": 1, "end": 40, "note": "受付5件" }]
+    },
+    {
+      "id": "v7", "label": "V7", "year": "2010", "title": "チャネル統合", "eyebrow": "SPRING PRIMARY",
+      "releaseWindow": "ベンダ並行1か月", "testSummary": "権限4件＋受渡し3件", "implementation": "Spring MVC＋COBOL",
+      "event": "代理店チャネルを追加しベンダ交代後も保守する", "decision": "チャネル別入口と共通Serviceを採用し、予約領域へOF/AG既定値を設定する。", "rationale": "社員画面への影響を限定し共通COBOL形式を維持するため。", "impact": "二重モデルと別スケジューラに加え、ベンダ間責務境界が保守知識になる。", "artifactState": "権限要件・Java・XML・引継ぎ・試験", "knowledgeRisk": "CRITICAL",
+      "detail": { "headline": "入口で権限を分け、COBOL連携は共通化", "background": "代理店追加とJavaベンダ交代が同時期に進んだ。", "adoptionSummary": "チャネル別Controllerと共通Serviceを採用した。", "decisionGroups": [{ "title": "チャネル構成", "question": "社員機能を維持して代理店権限をどう加えるか", "options": [{ "id": "A", "label": "チャネル別入口＋共通Service", "benefit": "差分と共通処理を分離", "concern": "既定値の再解釈が残る", "status": "selected", "reason": "権限差を入口へ限定できるため。" }, { "id": "B", "label": "代理店専用基盤", "benefit": "独立運用", "concern": "モデルと運用経路が増える", "status": "rejected" }] }] },
+      "constraints": [{ "kind": "業務", "text": "代理店は自代理店申込だけを扱う" }, { "kind": "開発", "text": "Java・COBOL別ベンダ" }, { "kind": "技術", "text": "80文字と契約原簿を維持" }],
+      "evidence": [{ "id": "v7-event", "stage": "設計判断", "label": "V7設計判断", "path": "specification/business_specification/v07/channel_design_deliberation_v07.md", "start": 1, "end": 60, "note": "チャネル方式の全案" }, { "id": "v7-requirement", "stage": "要件", "label": "V7追加要件", "path": "specification/requirements/v07/channel_additional_requirements_v07.md", "start": 1, "end": 60, "note": "権限と既定値" }, { "id": "v7-design", "stage": "設計", "label": "V7外部設計", "path": "specification/external_design/v07/channel_external_design_v07.md", "start": 1, "end": 60, "note": "予約領域位置" }, { "id": "v7-code", "stage": "Java", "label": "チャネル共通Service", "path": "implementation/v07/java/com/legacysimulator/v07/ChannelApplicationService.java", "start": 1, "end": 160, "note": "社員・代理店権限" }, { "id": "v7-controller", "stage": "Java", "label": "代理店Controller", "path": "implementation/v07/java/com/legacysimulator/v07/AgencyEntryController.java", "start": 1, "end": 100, "note": "代理店認証情報の受渡し" }, { "id": "v7-schedule", "stage": "Java", "label": "スケジューラ相関", "path": "implementation/v07/java/com/legacysimulator/v07/ScheduleCoordinationService.java", "start": 1, "end": 120, "note": "Java・COBOL完了連絡" }, { "id": "v7-incident", "stage": "Java", "label": "障害調査振分け", "path": "implementation/v07/java/com/legacysimulator/v07/IntegrationIncidentRouter.java", "start": 1, "end": 80, "note": "二社の調査開始順" }, { "id": "v7-test", "stage": "テスト", "label": "V7テスト成績", "path": "specification/validation_history/v07/test_result_v07.md", "start": 1, "end": 40, "note": "権限4件" }]
+    },
+    {
+      "id": "v8", "label": "V8", "year": "2015", "title": "外部連携ハブ", "eyebrow": "INTEGRATION HUB",
+      "releaseWindow": "接続先別", "testSummary": "連携4件＋接続・再送検証", "implementation": "Adapter＋再送キュー",
+      "event": "方式と日程が異なる複数外部システムと連携する", "decision": "接続先別アダプタ、共通中間形式、順序付き再送、重複排除をSpring内へ追加する。", "rationale": "接続先差分を局所化しCOBOL中核形式を一つに保つため。", "impact": "再送条件と責任分界が接続先ごとに増える。", "artifactState": "IF要件・Adapter実装・責任分界・連携試験", "knowledgeRisk": "CRITICAL",
+      "detail": { "headline": "接続先差分をアダプタへ閉じ、共通形式で中核へ接続", "background": "SOAP、ESB、キューの方式とリリース日が異なっていた。", "adoptionSummary": "接続先別アダプタと共通中間形式を採用した。", "decisionGroups": [{ "title": "外部接続方式", "question": "異なる方式を中核へどう接続するか", "options": [{ "id": "A", "label": "単一方式を要求", "benefit": "構成が統一", "concern": "接続先制約に合わない", "status": "rejected" }, { "id": "B", "label": "アダプタ＋共通形式", "benefit": "差分を局所化", "concern": "変換と再送管理が必要", "status": "selected", "reason": "中核の固定長を維持できるため。" }] }] },
+      "constraints": [{ "kind": "業務", "text": "外部応答待ちでも受付状態を保持" }, { "kind": "開発", "text": "社内外の複数組織" }, { "kind": "技術", "text": "SOAP・ESB・キュー・固定長が併存" }],
+      "evidence": [{ "id": "v8-event", "stage": "設計判断", "label": "V8設計判断", "path": "specification/business_specification/v08/integration_design_deliberation_v08.md", "start": 1, "end": 60, "note": "共通形式の選択" }, { "id": "v8-requirement", "stage": "要件", "label": "V8追加要件", "path": "specification/requirements/v08/external_integration_additional_requirements_v08.md", "start": 1, "end": 60, "note": "再送と重複排除" }, { "id": "v8-design", "stage": "設計", "label": "V8内部設計", "path": "specification/internal_design/v08/external_integration_internal_design_v08.md", "start": 1, "end": 60, "note": "Adapter責務" }, { "id": "v8-code", "stage": "Java", "label": "連携Orchestrator", "path": "implementation/v08/java/com/legacysimulator/v08/IntegrationOrchestrator.java", "start": 1, "end": 180, "note": "状態・Client・重複排除の統括" }, { "id": "v8-repository", "stage": "Java", "label": "連携状態Repository", "path": "implementation/v08/java/com/legacysimulator/v08/JdbcIntegrationStateRepository.java", "start": 1, "end": 200, "note": "応答待ちと再送回数" }, { "id": "v8-retry", "stage": "Java", "label": "再送Dispatch Job", "path": "implementation/v08/java/com/legacysimulator/v08/RetryDispatchJob.java", "start": 1, "end": 140, "note": "承認済み対象の順序再送" }, { "id": "v8-test", "stage": "テスト", "label": "V8テスト成績", "path": "specification/validation_history/v08/test_result_v08.md", "start": 1, "end": 40, "note": "連携4件" }]
+    },
+    {
+      "id": "v9", "label": "V9", "year": "2020", "title": "横断監査", "eyebrow": "MULTI-SPRING AUDIT",
+      "releaseWindow": "監査開始日固定", "testSummary": "時刻4件＋監査形式3件", "implementation": "旧Spring＋Boot＋COBOL",
+      "event": "全査定判断を追跡しKYC連携を独立リリースする", "decision": "各世代へ個別ログを追加して夜間集約し、KYCだけをBoot分離する。", "rationale": "既存責務を維持し監査期限と外部周期に対応するため。", "impact": "取引キー変換、時刻差、共有DB更新順の横断確認が必要になる。", "artifactState": "監査要件・時刻相関実装・運用・試験", "knowledgeRisk": "HIGH",
+      "detail": { "headline": "各世代のログを保持し、UTCで横断相関", "background": "旧Spring、Boot、COBOLを監査開始日までに対象化する必要があった。", "adoptionSummary": "個別ログ＋夜間集約とKYC分離を採用した。", "decisionGroups": [{ "title": "監査実装方式", "question": "期限までに全世代をどう網羅するか", "options": [{ "id": "A", "label": "全世代を再構成", "benefit": "ログを統一", "concern": "期限内の変更範囲が大きい", "status": "rejected" }, { "id": "B", "label": "個別ログ＋夜間集約", "benefit": "現行責務を維持", "concern": "相関処理が必要", "status": "selected", "reason": "監査対象を期限内に網羅するため。" }] }] },
+      "constraints": [{ "kind": "業務", "text": "入力・理由・操作者・時刻を追跡" }, { "kind": "開発", "text": "機能単位の複数保守チーム" }, { "kind": "技術", "text": "多世代ログと時刻差" }],
+      "evidence": [{ "id": "v9-event", "stage": "設計判断", "label": "V9設計判断", "path": "specification/business_specification/v09/audit_design_deliberation_v09.md", "start": 1, "end": 60, "note": "監査方式とBoot分離" }, { "id": "v9-requirement", "stage": "要件", "label": "V9追加要件", "path": "specification/requirements/v09/audit_additional_requirements_v09.md", "start": 1, "end": 60, "note": "監査必須項目" }, { "id": "v9-design", "stage": "設計", "label": "V9内部設計", "path": "specification/internal_design/v09/audit_internal_design_v09.md", "start": 1, "end": 60, "note": "正規化と相関" }, { "id": "v9-code", "stage": "Java", "label": "COBOL監査Mapper", "path": "implementation/v09/java/com/legacysimulator/v09/CobolFixedAuditMapper.java", "start": 1, "end": 120, "note": "100文字固定長から共通監査へ" }, { "id": "v9-repository", "stage": "Java", "label": "監査JDBC Repository", "path": "implementation/v09/java/com/legacysimulator/v09/JdbcAuditRepository.java", "start": 1, "end": 200, "note": "元時刻・オフセット・UTC保存" }, { "id": "v9-aggregation", "stage": "Java", "label": "夜間監査集約", "path": "implementation/v09/java/com/legacysimulator/v09/AuditAggregationJob.java", "start": 1, "end": 150, "note": "件数・重複・変換エラー集計" }, { "id": "v9-kyc", "stage": "Java", "label": "KYC Adapter Service", "path": "implementation/v09/java/com/legacysimulator/v09/KycAdapterService.java", "start": 1, "end": 100, "note": "DB保存・発行・Outbox順序" }, { "id": "v9-test", "stage": "テスト", "label": "V9テスト成績", "path": "specification/validation_history/v09/test_result_v09.md", "start": 1, "end": 40, "note": "時刻相関4件" }]
+    },
+    {
+      "id": "v10", "label": "V10", "year": "2026", "title": "知識復元", "eyebrow": "MODERNIZATION DISCOVERY",
+      "releaseWindow": "管理された調査", "testSummary": "16エッジ", "implementation": "証拠分析ツール",
+      "event": "多世代の意図と動作を復元し継続変更できる状態へ移る", "decision": "複数証拠を採点し、反証とレビュー状態を持つ知識エッジを生成する。", "rationale": "単一資料を正解とせず推定を人手審査へ渡すため。", "impact": "変更前に根拠と未解決点を可視化し、知識接続の回復を始める。", "artifactState": "復元要件・実行ツール・証拠台帳・ゴールデン試験", "knowledgeRisk": "MEDIUM",
+      "detail": { "headline": "AI支援を証拠整理に使い、判断はレビューへ残す", "background": "全世代を横断して説明できる担当者がいない。", "adoptionSummary": "証拠別スコア、反証上限、PENDING状態を採用した。", "decisionGroups": [{ "title": "モダナイゼーション開始点", "question": "断片化した資産から何を正とするか", "options": [{ "id": "A", "label": "一律自動変換", "benefit": "変換速度が高い", "concern": "業務意図を扱えない", "status": "rejected" }, { "id": "B", "label": "最新文書を正とする", "benefit": "読みやすい", "concern": "実装・運用との差を見落とす", "status": "rejected" }, { "id": "C", "label": "複数証拠＋レビュー", "benefit": "意図と動作を分離", "concern": "証拠収集が必要", "status": "selected", "reason": "推定を未審査で確定せず継続改善できるため。" }] }] },
+      "constraints": [{ "kind": "業務", "text": "現行動作と望ましい動作を区別" }, { "kind": "開発", "text": "全世代を説明できる担当者が不在" }, { "kind": "技術", "text": "既存形式を保存し意味を別管理" }],
+      "evidence": [{ "id": "v10-event", "stage": "設計判断", "label": "V10設計判断", "path": "specification/business_specification/v10/modernization_design_deliberation_v10.md", "start": 1, "end": 80, "note": "全4案とAIの責務" }, { "id": "v10-requirement", "stage": "要件", "label": "V10要件", "path": "specification/requirements/v10/knowledge_recovery_requirements_v10.md", "start": 1, "end": 80, "note": "確信度と反証" }, { "id": "v10-design", "stage": "設計", "label": "V10外部設計", "path": "specification/external_design/v10/knowledge_recovery_external_design_v10.md", "start": 1, "end": 80, "note": "スコア計算" }, { "id": "v10-code", "stage": "PowerShell", "label": "知識復元ツール", "path": "implementation/v10/tools/recover-knowledge.ps1", "start": 1, "end": 160, "note": "実行可能な証拠採点" }, { "id": "v10-scan", "stage": "PowerShell", "label": "全資産Scanner", "path": "implementation/v10/tools/scan-artifacts.ps1", "start": 1, "end": 160, "note": "Version・種別・SHA-256棚卸し" }, { "id": "v10-golden", "stage": "PowerShell", "label": "Golden比較", "path": "implementation/v10/tools/compare-golden.ps1", "start": 1, "end": 140, "note": "根拠Version付き固定長比較" }, { "id": "v10-graph", "stage": "Java 21", "label": "Knowledge Graph", "path": "implementation/v10/java/com/legacysimulator/v10/KnowledgeGraph.java", "start": 1, "end": 160, "note": "ノード・エッジ・レビュー待ち" }, { "id": "v10-test", "stage": "テスト", "label": "V10テスト成績", "path": "specification/validation_history/v10/test_result_v10.md", "start": 1, "end": 40, "note": "16エッジ実行" }, { "id": "v10-continuity", "stage": "検証記録", "label": "業務継続補正サマリ", "path": "specification/validation_history/business_continuity_correction_summary_v06_v10.md", "start": 1, "end": 120, "note": "修正対象と意図的に残した不整合の区別" }]
+    }
+  ],
+  "tests": [
+    { "id": "v1", "label": "V1 基準19件", "command": "test/v01/scripts/run-tests.ps1" },
+    { "id": "v2", "label": "V2 互換＋特約53件", "command": "test/v02/scripts/run-tests.ps1" },
+    { "id": "regression", "label": "V1～V3 回帰", "command": "test/v03/scripts/run-regression.ps1" },
+    { "id": "all", "label": "V1～V10 全Version", "command": "test/run-all-versions.ps1" }
+  ]
+}

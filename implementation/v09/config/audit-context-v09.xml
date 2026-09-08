@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- V9-ADD-018: 旧Spring側の監査集約部品。Boot側とは別配布する。 -->
+<beans xmlns="http://www.springframework.org/schema/beans">
+  <bean id="auditRepository" class="com.legacysimulator.v09.JdbcAuditRepository">
+    <constructor-arg ref="auditDataSource" />
+  </bean>
+  <bean id="auditAggregationJob" class="com.legacysimulator.v09.AuditAggregationJob">
+    <constructor-arg ref="auditRepository" />
+  </bean>
+  <bean id="cobolAuditMapper" class="com.legacysimulator.v09.CobolFixedAuditMapper" />
+  <bean id="legacySpringAuditMapper" class="com.legacysimulator.v09.LegacySpringAuditMapper" />
+  <!-- V9-FIX-001 ADD: 各世代がMapper互換形式を生成する共通部品。 -->
+  <bean id="auditEventEncoder" class="com.legacysimulator.v09.AuditEventEncoder" />
+  <bean id="generationAuditEmitter" class="com.legacysimulator.v09.GenerationAuditEmitter">
+    <constructor-arg ref="auditEventEncoder" />
+  </bean>
+  <!-- V9-FIX-002 ADD: 結果とOutboxを同一トランザクションで保存する。 -->
+  <bean id="kycOutboxRepository" class="com.legacysimulator.v09.JdbcKycOutboxRepository">
+    <constructor-arg ref="auditDataSource" />
+  </bean>
+</beans>

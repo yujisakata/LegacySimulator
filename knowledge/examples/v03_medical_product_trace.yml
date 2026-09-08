@@ -1,0 +1,91 @@
+schema_version: 1
+graph_id: V03-MEDICAL-PRODUCT-COPY
+version: V3
+description: "V3医療系商品の複製開発と知識分散"
+
+nodes:
+  - node_id: EV-V03-MEDICAL-COPY-001
+    type: event
+    label: "医療系商品を既存商品コピーで追加"
+    artifact: scenario/version_timeline.yml
+  - node_id: DOC-REQ-V3-001
+    type: requirement
+    label: "V3追加要件"
+    artifact: specification/requirements/v03/medical_additional_requirements_v03.md
+  - node_id: DOC-EXT-V3-017
+    type: design
+    label: "V3外部設計別冊"
+    artifact: specification/external_design/v03/medical_product_design_addendum_v03.md
+  - node_id: PRG-V1-BAT-001
+    type: implementation
+    label: "複製元NBASSESS"
+    artifact: implementation/v01/batch/NBASSESS.cbl
+  - node_id: PRG-V3-BAT-001
+    type: implementation
+    label: "複製先MDASSESS"
+    artifact: implementation/v03/batch/MDASSESS.cbl
+  - node_id: TACIT-V3-DUPLICATED-RULES
+    type: decision
+    label: "複製元と複製先で重複する共通査定段落"
+    artifact: specification/internal_design/v03/medical_cobol_design_v03.md
+  - node_id: UNC-V3-ALL-PRODUCT-IMPACT
+    type: evidence
+    label: "共通ルール変更時の全商品影響先"
+    artifact: knowledge/knowledge_evolution.yml
+
+edges:
+  - edge_id: E-V3-EVENT-REQ
+    from_node: EV-V03-MEDICAL-COPY-001
+    to_node: DOC-REQ-V3-001
+    edge_type: derived_from
+    valid_from_version: V3
+    valid_to_version: V3
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["EV-V03-MEDICAL-COPY-001", "DOC-REQ-V3-001"]
+    rationale: "3か月の商品追加を差分要件へ展開した"
+    holder_roles: ["医療保険商品担当者", "COBOL主任"]
+  - edge_id: E-V3-REQ-DESIGN
+    from_node: DOC-REQ-V3-001
+    to_node: DOC-EXT-V3-017
+    edge_type: implemented_by
+    valid_from_version: V3
+    valid_to_version: V3
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["DOC-REQ-V3-001", "DOC-EXT-V3-017"]
+    rationale: "原本を更新せず商品差分を別冊化した"
+    holder_roles: ["医療保険商品担当者", "COBOL主任"]
+  - edge_id: E-V3-COPY-SOURCE
+    from_node: PRG-V1-BAT-001
+    to_node: PRG-V3-BAT-001
+    edge_type: implemented_by
+    valid_from_version: V3
+    valid_to_version: V3
+    knowledge_state: inferable
+    confidence: confirmed
+    evidence_refs: ["V3-001 ADD/DELコメント", "類似COBOL比較"]
+    rationale: "V1主契約の共通事務処理を複製し、商品固有条件へ置換した"
+    holder_roles: ["COBOL主任"]
+  - edge_id: E-V3-DUPLICATION-TACIT
+    from_node: PRG-V3-BAT-001
+    to_node: TACIT-V3-DUPLICATED-RULES
+    edge_type: evidenced_by
+    valid_from_version: V3
+    valid_to_version: V3
+    knowledge_state: tacit
+    confidence: probable
+    evidence_refs: ["MDASSESSとNBASSESSの類似段落"]
+    rationale: "共通変更を両方へ反映する必要性は共通化機構で表現されない"
+    holder_roles: ["COBOL主任"]
+  - edge_id: E-V3-IMPACT-UNCONFIRMED
+    from_node: TACIT-V3-DUPLICATED-RULES
+    to_node: UNC-V3-ALL-PRODUCT-IMPACT
+    edge_type: evidenced_by
+    valid_from_version: V3
+    valid_to_version: V3
+    knowledge_state: unconfirmed
+    confidence: plausible
+    evidence_refs: ["knowledge/knowledge_evolution.yml#V3"]
+    rationale: "全商品プログラムの同期対象一覧は維持されていない"
+    holder_roles: ["COBOL主任"]

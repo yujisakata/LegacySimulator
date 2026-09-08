@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- V8-ADD-019: 接続先単位のClientと共通連携部品を登録する。 -->
+<beans xmlns="http://www.springframework.org/schema/beans">
+  <!-- V8-FIX-002 DEL: kycSoapClient / KycSoapClient -->
+  <!-- V8-FIX-002 DEL: contractEsbClient / ContractEsbClient -->
+  <!-- V8-FIX-002 ADD: 外部設計どおり本人確認=ESB、契約照会=SOAPで登録する。 -->
+  <bean id="kycEsbClient" class="com.legacysimulator.v08.KycEsbClient" />
+  <bean id="contractSoapClient" class="com.legacysimulator.v08.ContractSoapClient" />
+  <bean id="agencyQueueClient" class="com.legacysimulator.v08.AgencyQueueClient" />
+  <bean id="duplicateResponseGuard" class="com.legacysimulator.v08.DuplicateResponseGuard" />
+  <bean id="integrationStateRepository" class="com.legacysimulator.v08.JdbcIntegrationStateRepository">
+    <constructor-arg ref="entryDataSource" />
+  </bean>
+</beans>

@@ -1,0 +1,4 @@
+case_id,business_date,exported_application_numbers,imported_application_numbers,expected_difference,expected_missing,expected_unexpected
+V7-S01,20260908,APP00001|APP00002,APP00001|APP00002,false,,
+V7-S02,20260908,APP00001|APP00002,APP00001|APP00003,true,APP00002,APP00003
+V7-S03,20260908,APP00001|APP00002,APP00001,true,APP00002,

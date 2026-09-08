@@ -1,0 +1,5 @@
+case_id,partner,transaction_id,sequence,expected_accept,expected_order
+V8-01,KYC,T001,20,true,2
+V8-02,AGENCY,T002,10,true,1
+V8-03,KYC,T001,30,false,3
+V8-04,CONTRACT,T001,40,true,4

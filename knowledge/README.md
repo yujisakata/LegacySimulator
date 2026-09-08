@@ -6,11 +6,15 @@
 
 ## ファイル
 
+- [`../specification/evolution_analysis/tacit_knowledge_and_artifact_drift_root_cause_analysis.md`](../specification/evolution_analysis/tacit_knowledge_and_artifact_drift_root_cause_analysis.md): 暗黙知、文書／コード非同期、知識散在が生まれた原因の事実ベース横断分析
 - `history_of_check.md`: 生命保険査定ルールの歴史調査
 - `knowledge_model.yml`: ノード、エッジ、知識状態、確信度の共通定義
 - `knowledge_evolution.yml`: V1〜V10における知識状態の変化
 - `examples/v01_30day_rule.yml`: V1の30日猶予ルールを知識グラフとして表した例
 - `examples/v01_baseline_trace.yml`: V1の業務・要件・設計・COBOL・テストを結ぶベースライン例
+- `examples/v02_rider_requirements.yml`: V2特約追加イベントから追加要件までの知識構造
+- `examples/v02_rider_implementation_trace.yml`: V2追加要件から設計・COBOL・実行テストまでの知識構造
+- `examples/v03_medical_product_trace.yml`: V3商品別複製と差分設計・知識分散の構造
 
 ## 管理上の原則
 

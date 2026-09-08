@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- V5-ADD-014: 当時のServletコンテナへ照会画面を登録する。 -->
+<web-app>
+  <display-name>新契約進捗照会</display-name>
+  <servlet>
+    <servlet-name>contractInquiry</servlet-name>
+    <servlet-class>com.legacysimulator.v05.ContractInquiryServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>contractInquiry</servlet-name>
+    <url-pattern>/contract/inquiry</url-pattern>
+  </servlet-mapping>
+  <session-config>
+    <session-timeout>15</session-timeout>
+  </session-config>
+</web-app>

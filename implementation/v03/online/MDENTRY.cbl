@@ -1,0 +1,169 @@
+       IDENTIFICATION DIVISION.
+      *V3-001 DEL PROGRAM-ID. NBENTRY.
+       PROGRAM-ID. MDENTRY.
+      *V3-001 DEL AUTHOR. V1-NEW-BUSINESS-TEAM.
+       AUTHOR. V3-MEDICAL-PRODUCT-TEAM.
+      *
+      * 変更履歴
+      * V3-001 1990-04-01 医療系商品の端末登録を追加。
+      * 置換前の実行行はDELコメントとして保存する。
+
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT OPTIONAL APPLICATION-FILE
+      *V3-001 DEL     ASSIGN TO "APPLICATION.DAT"
+               ASSIGN TO "MEDICAL.DAT"
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS WS-FILE-STATUS.
+
+       DATA DIVISION.
+       FILE SECTION.
+       FD  APPLICATION-FILE
+           RECORD CONTAINS 120 CHARACTERS.
+      *V3-001 DEL COPY "NBAPPL.cpy".
+           COPY "MDAPPL.cpy".
+
+       WORKING-STORAGE SECTION.
+       01  WS-FILE-STATUS                  PIC XX VALUE SPACES.
+       01  WS-VALID-FLAG                   PIC X VALUE "Y".
+       01  WS-AGE                          PIC 99 VALUE ZERO.
+       01  WS-AMOUNT                       PIC 9(8) VALUE ZERO.
+
+       PROCEDURE DIVISION.
+       0000-MAIN.
+           INITIALIZE APPLICATION-RECORD
+           PERFORM 1000-ACCEPT-INPUT
+           PERFORM 2000-VALIDATE-INPUT
+           IF WS-VALID-FLAG = "Y"
+               PERFORM 3000-WRITE-RECORD
+           ELSE
+               MOVE 8 TO RETURN-CODE
+           END-IF
+           STOP RUN.
+
+       1000-ACCEPT-INPUT.
+           DISPLAY "APPLICATION NUMBER (10 DIGITS): "
+               WITH NO ADVANCING
+           ACCEPT APP-NUMBER
+           DISPLAY "APPLICATION DATE (YYYYMMDD): "
+               WITH NO ADVANCING
+           ACCEPT APP-APPLICATION-DATE
+           DISPLAY "DISCLOSURE DATE (YYYYMMDD): "
+               WITH NO ADVANCING
+           ACCEPT APP-DISCLOSURE-DATE
+           DISPLAY "PREMIUM DATE (YYYYMMDD OR ZERO): "
+               WITH NO ADVANCING
+           ACCEPT APP-PREMIUM-DATE
+           DISPLAY "RECEIPT DATE (YYYYMMDD): "
+               WITH NO ADVANCING
+           ACCEPT APP-RECEIPT-DATE
+           DISPLAY "PROCESS DATE (YYYYMMDD): "
+               WITH NO ADVANCING
+           ACCEPT APP-PROCESS-DATE
+           DISPLAY "DEFICIENCY DATE (YYYYMMDD OR ZERO): "
+               WITH NO ADVANCING
+           ACCEPT APP-DEFICIENCY-DATE
+           DISPLAY "AGE: " WITH NO ADVANCING
+           ACCEPT APP-AGE-TEXT
+      *V3-001 DEL DISPLAY "DEATH BENEFIT AMOUNT (YEN): "
+      *V3-001 DEL     WITH NO ADVANCING
+      *V3-001 ADD START - 商品別保障額を入力する。
+           DISPLAY "PRODUCT BENEFIT AMOUNT (YEN): "
+               WITH NO ADVANCING
+      *V3-001 ADD END
+           ACCEPT APP-AMOUNT-TEXT
+      *V3-001 DEL DISPLAY "PRODUCT (WL): " WITH NO ADVANCING
+      *V3-001 ADD START - MIまたはCIを入力する。
+           DISPLAY "PRODUCT (MI/CI): " WITH NO ADVANCING
+      *V3-001 ADD END
+           ACCEPT APP-PRODUCT-CODE
+           DISPLAY "DOCUMENT COMPLETE (Y/N): "
+               WITH NO ADVANCING
+           ACCEPT APP-DOCUMENT-COMPLETE
+           DISPLAY "MEDICAL CLASS (S/M): "
+               WITH NO ADVANCING
+           ACCEPT APP-MEDICAL-CLASS
+           DISPLAY "MANAGER DECISION (A/P/D/BLANK): "
+               WITH NO ADVANCING
+           ACCEPT APP-MANAGER-DECISION
+           DISPLAY "WITHDRAWAL (Y/N): " WITH NO ADVANCING
+           ACCEPT APP-WITHDRAWAL
+           MOVE SPACES TO APP-RESERVED.
+
+       2000-VALIDATE-INPUT.
+           IF APP-NUMBER IS NOT NUMERIC
+               DISPLAY "ERROR: APPLICATION NUMBER"
+               MOVE "N" TO WS-VALID-FLAG
+           END-IF
+      *V3-001 DEL IF APP-PRODUCT-CODE NOT = "WL"
+      *V3-001 DEL     DISPLAY "ERROR: V1 PRODUCT MUST BE WL"
+      *V3-001 DEL     MOVE "N" TO WS-VALID-FLAG
+      *V3-001 DEL END-IF
+      *V3-001 ADD START - BR-V3-COM-004 商品コード点検。
+           IF APP-PRODUCT-CODE NOT = "MI"
+               AND APP-PRODUCT-CODE NOT = "CI"
+               DISPLAY "ERROR: PRODUCT MUST BE MI OR CI"
+               MOVE "N" TO WS-VALID-FLAG
+           END-IF
+      *V3-001 ADD END
+           IF APP-AGE-TEXT IS NUMERIC
+               MOVE APP-AGE-TEXT TO WS-AGE
+      *V3-001 DEL IF WS-AGE < 15 OR WS-AGE > 65
+      *V3-001 DEL     DISPLAY "ERROR: AGE MUST BE 15 THROUGH 65"
+      *V3-001 DEL     MOVE "N" TO WS-VALID-FLAG
+      *V3-001 DEL END-IF
+      *V3-001 ADD START - BR-V3-MI-001/CI-001 年齢条件。
+               IF (APP-PRODUCT-CODE = "MI"
+                   AND (WS-AGE < 0 OR WS-AGE > 70))
+                   OR (APP-PRODUCT-CODE = "CI"
+                   AND (WS-AGE < 20 OR WS-AGE > 65))
+                   DISPLAY "ERROR: AGE OUTSIDE PRODUCT RANGE"
+                   MOVE "N" TO WS-VALID-FLAG
+               END-IF
+      *V3-001 ADD END
+           ELSE
+               DISPLAY "ERROR: AGE MUST BE NUMERIC"
+               MOVE "N" TO WS-VALID-FLAG
+           END-IF
+           IF APP-AMOUNT-TEXT IS NUMERIC
+               MOVE APP-AMOUNT-TEXT TO WS-AMOUNT
+      *V3-001 DEL IF WS-AMOUNT = ZERO
+      *V3-001 DEL     OR WS-AMOUNT > 50000000
+      *V3-001 DEL     DISPLAY "ERROR: AMOUNT RANGE"
+      *V3-001 DEL     MOVE "N" TO WS-VALID-FLAG
+      *V3-001 DEL END-IF
+      *V3-001 ADD START - BR-V3-MI-002/CI-002 保障額条件。
+               IF (APP-PRODUCT-CODE = "MI"
+                   AND WS-AMOUNT NOT = 00003000
+                   AND WS-AMOUNT NOT = 00005000
+                   AND WS-AMOUNT NOT = 00010000)
+                   OR (APP-PRODUCT-CODE = "CI"
+                   AND WS-AMOUNT NOT = 01000000
+                   AND WS-AMOUNT NOT = 02000000
+                   AND WS-AMOUNT NOT = 03000000)
+                   DISPLAY "ERROR: AMOUNT OUTSIDE PRODUCT VALUES"
+                   MOVE "N" TO WS-VALID-FLAG
+               END-IF
+      *V3-001 ADD END
+           ELSE
+               DISPLAY "ERROR: AMOUNT MUST BE NUMERIC"
+               MOVE "N" TO WS-VALID-FLAG
+           END-IF.
+
+       3000-WRITE-RECORD.
+           OPEN EXTEND APPLICATION-FILE
+           IF WS-FILE-STATUS = "00"
+               WRITE APPLICATION-RECORD
+               IF WS-FILE-STATUS = "00"
+                   DISPLAY "APPLICATION REGISTERED: " APP-NUMBER
+                   MOVE 0 TO RETURN-CODE
+               ELSE
+                   DISPLAY "ERROR: WRITE STATUS " WS-FILE-STATUS
+                   MOVE 12 TO RETURN-CODE
+               END-IF
+               CLOSE APPLICATION-FILE
+           ELSE
+               DISPLAY "ERROR: OPEN STATUS " WS-FILE-STATUS
+               MOVE 12 TO RETURN-CODE
+           END-IF.

@@ -1,0 +1,73 @@
+schema_version: 1
+graph_id: V02-RIDER-IMPLEMENTATION
+version: V2
+description: "V2追加要件から設計・COBOL・実行テストまでの知識構造"
+
+nodes:
+  - node_id: DOC-REQ-V2-001
+    type: requirement
+    label: "V2追加要件定義"
+    artifact: specification/requirements/v02/new_business_additional_requirements_v02.md
+  - node_id: DOC-EXT-V2-001
+    type: design
+    label: "V2外部設計追補"
+    artifact: specification/external_design/v02/new_business_system_design_delta_v02.md
+  - node_id: DOC-INT-V2-001
+    type: design
+    label: "V2 COBOL詳細設計"
+    artifact: specification/internal_design/v02/new_business_cobol_design_v02.md
+  - node_id: PRG-V2-BAT-001
+    type: implementation
+    label: "V2 NBASSESS"
+    artifact: implementation/v02/batch/NBASSESS.cbl
+  - node_id: DOC-VAL-V2-004
+    type: evidence
+    label: "V2テスト成績"
+    artifact: specification/validation_history/v02/test_result_v02.md
+
+edges:
+  - edge_id: E-V2-REQ-EXT
+    from_node: DOC-REQ-V2-001
+    to_node: DOC-EXT-V2-001
+    edge_type: implemented_by
+    valid_from_version: V2
+    valid_to_version: V2
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["DOC-REQ-V2-001", "DOC-EXT-V2-001"]
+    rationale: "追加要件を固定長項目と外部判定順序へ割り当てた"
+    holder_roles: ["初期設計者", "COBOL主任"]
+  - edge_id: E-V2-EXT-INT
+    from_node: DOC-EXT-V2-001
+    to_node: DOC-INT-V2-001
+    edge_type: implemented_by
+    valid_from_version: V2
+    valid_to_version: V2
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["DOC-EXT-V2-001", "DOC-INT-V2-001"]
+    rationale: "物理項目と判定順序をCOBOL段落へ展開した"
+    holder_roles: ["初期設計者", "COBOL主任"]
+  - edge_id: E-V2-INT-CODE
+    from_node: DOC-INT-V2-001
+    to_node: PRG-V2-BAT-001
+    edge_type: implemented_by
+    valid_from_version: V2
+    valid_to_version: V2
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["DOC-INT-V2-001", "PRG-V2-BAT-001"]
+    rationale: "V2-001変更コメント付きの全量COBOLへ実装した"
+    holder_roles: ["COBOL主任"]
+  - edge_id: E-V2-CODE-TEST
+    from_node: PRG-V2-BAT-001
+    to_node: DOC-VAL-V2-004
+    edge_type: evidenced_by
+    valid_from_version: V2
+    valid_to_version: V2
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["TEST-RUN-2026-08-22"]
+    rationale: "GnuCOBOLで53件の固定長完全一致を確認した"
+    holder_roles: ["検証担当者"]
+

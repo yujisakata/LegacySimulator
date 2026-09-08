@@ -1,0 +1,102 @@
+schema_version: 1
+graph_id: V02-RIDER-REQUIREMENTS
+version: V2
+description: "V2特約追加イベントから追加要件までの知識構造"
+
+nodes:
+  - node_id: EV-V02-RIDER-001
+    type: event
+    label: "災害死亡特約・入院特約の同時発売"
+    artifact: scenario/version_timeline.yml
+  - node_id: CR-V2-1985-001
+    type: requirement
+    label: "特約追加変更要求"
+    artifact: specification/requirements/v02/rider_addition_change_request_v02.md
+  - node_id: DOC-BUS-V2-005
+    type: business_concept
+    label: "V2特約商品定義"
+    artifact: specification/business_specification/v02/new_business_rider_product_definition_v02.md
+  - node_id: DOC-BUS-V2-002
+    type: business_rule
+    label: "V2特約業務ルール差分"
+    artifact: specification/business_specification/v02/new_business_business_rules_delta_v02.md
+  - node_id: DOC-REQ-V2-001
+    type: requirement
+    label: "V2追加要件定義"
+    artifact: specification/requirements/v02/new_business_additional_requirements_v02.md
+  - node_id: TACIT-V2-ZERO-NONE
+    type: decision
+    label: "00も特約なしとして受け入れる互換動作"
+    artifact: specification/business_specification/v02/new_business_design_deliberation_v02.md
+  - node_id: UNC-V2-DOWNSTREAM-RESERVED
+    type: evidence
+    label: "全下流ジョブが予約領域を無視するという確認範囲"
+    artifact: specification/business_specification/v02/new_business_design_deliberation_v02.md
+
+edges:
+  - edge_id: E-V2-EVENT-CR
+    from_node: EV-V02-RIDER-001
+    to_node: CR-V2-1985-001
+    edge_type: derived_from
+    valid_from_version: V2
+    valid_to_version: V2
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["scenario/version_timeline.yml", "CR-V2-1985-001"]
+    rationale: "同時発売イベントを期限・範囲・受入条件を持つ変更要求へ展開した"
+    holder_roles: ["商品担当者", "初期設計者"]
+  - edge_id: E-V2-CR-PRODUCT
+    from_node: CR-V2-1985-001
+    to_node: DOC-BUS-V2-005
+    edge_type: derived_from
+    valid_from_version: V2
+    valid_to_version: V2
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["CR-V2-1985-001", "DOC-BUS-V2-005"]
+    rationale: "変更要求から二つの特約商品と申込形態を定義した"
+    holder_roles: ["商品担当者", "新契約部査定課長"]
+  - edge_id: E-V2-PRODUCT-RULES
+    from_node: DOC-BUS-V2-005
+    to_node: DOC-BUS-V2-002
+    edge_type: derived_from
+    valid_from_version: V2
+    valid_to_version: V2
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["DOC-BUS-V2-005", "DOC-BUS-V2-002"]
+    rationale: "特約商品定義を年齢・金額・決裁条件へ具体化した"
+    holder_roles: ["商品担当者", "査定担当者"]
+  - edge_id: E-V2-RULES-REQ
+    from_node: DOC-BUS-V2-002
+    to_node: DOC-REQ-V2-001
+    edge_type: derived_from
+    valid_from_version: V2
+    valid_to_version: V2
+    knowledge_state: documented
+    confidence: confirmed
+    evidence_refs: ["DOC-BUS-V2-002", "DOC-REQ-V2-001"]
+    rationale: "特約業務ルールをFR-V2-001〜010へ展開した"
+    holder_roles: ["初期設計者", "COBOL主任"]
+  - edge_id: E-V2-ZERO-CANONICAL-NONE
+    from_node: TACIT-V2-ZERO-NONE
+    to_node: DOC-REQ-V2-001
+    edge_type: exception_to
+    valid_from_version: V2
+    valid_to_version: V2
+    knowledge_state: tacit
+    confidence: probable
+    evidence_refs: ["LOG-HIS-1985-001"]
+    rationale: "正式要件は空白だけを特約なしとするが、端末のゼロ初期化データを実装で受容する予定"
+    holder_roles: ["COBOL主任", "受付端末担当"]
+  - edge_id: E-V2-DOWNSTREAM-UNCERTAINTY
+    from_node: CR-V2-1985-001
+    to_node: UNC-V2-DOWNSTREAM-RESERVED
+    edge_type: evidenced_by
+    valid_from_version: V2
+    valid_to_version: V2
+    knowledge_state: unconfirmed
+    confidence: plausible
+    evidence_refs: ["証券発行担当者ヒアリング"]
+    rationale: "証券発行以外を含む全下流ソースの確認は設計開始時点で完了していない"
+    holder_roles: ["COBOL主任", "証券発行担当"]
