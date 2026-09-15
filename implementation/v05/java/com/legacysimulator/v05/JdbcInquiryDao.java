@@ -1,53 +1,23 @@
 package com.legacysimulator.v05;
 
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import javax.sql.DataSource;
 
-// V5-ADD-008: 照会用複製DBだけを参照するJDBC実装。
-public final class JdbcInquiryDao implements InquiryDao {
-    private static final String SELECT_SQL =
-            "SELECT CONTRACT_NUMBER, STATUS_CODE, INSURED_AMOUNT, AS_OF_DATE " +
-            "FROM INQUIRY_SNAPSHOT WHERE CONTRACT_NUMBER = ?";
-    private final DataSource dataSource;
-
-    public JdbcInquiryDao(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    public InquiryRecord find(String contractNumber) {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet result = null;
-        try {
-            connection = dataSource.getConnection();
-            connection.setReadOnly(true);
-            statement = connection.prepareStatement(SELECT_SQL);
-            statement.setString(1, contractNumber);
-            result = statement.executeQuery();
-            if (!result.next()) return null;
-            BigDecimal amount = result.getBigDecimal("INSURED_AMOUNT");
-            return new InquiryRecord(
-                    result.getString("CONTRACT_NUMBER"),
-                    result.getString("STATUS_CODE"),
-                    amount,
-                    result.getString("AS_OF_DATE"));
-        } catch (SQLException error) {
-            throw new InquiryDataAccessException("照会DBの取得に失敗しました", error);
-        } finally {
-            close(result);
-            close(statement);
-            close(connection);
-        }
-    }
-
-    private void close(AutoCloseable resource) {
-        if (resource == null) return;
-        try { resource.close(); } catch (Exception ignored) {
-            // V5-ADD-009: 主例外を維持し、クローズ失敗はサーバログ側で監視する。
+/** V5-ADD-003: Web用SELECT権限接続。公開メタデータと行を同じSQLで読む。 */
+public final class JdbcInquiryDao {
+    private final DataSource source;
+    public JdbcInquiryDao(DataSource source) { this.source=source; }
+    public InquiryRecord find(String number) throws SQLException {
+        try(Connection c=source.getConnection()) {
+            c.setReadOnly(true);
+            try(PreparedStatement st=c.prepareStatement("SELECT S.AS_OF AS PUBLISHED_DATE,R.* FROM INQUIRY_STATE S LEFT JOIN INQUIRY_SNAPSHOT R ON R.APP_NUMBER=? WHERE S.ID=1")) {
+                st.setString(1,number);
+                try(ResultSet rs=st.executeQuery()) {
+                    if(!rs.next() || rs.getDate("PUBLISHED_DATE")==null) throw new SQLException("Snapshot not published");
+                    if(rs.getString("APP_NUMBER")==null) return null;
+                    return new InquiryRecord(rs.getString("APP_NUMBER"),rs.getString("PRODUCT"),rs.getString("STATUS"),rs.getBigDecimal("AMOUNT"),rs.getDate("RESPONSIBILITY_DATE"),rs.getDate("PROCESS_DATE"),rs.getDate("RECEIPT_DATE"),rs.getString("RULE_CODE"),rs.getDate("APPLIED_DATE"),rs.getDate("PUBLISHED_DATE"),rs.getString("REASON"),rs.getString("APPROVAL"));
+                }
+            }
         }
     }
 }

@@ -1,12 +1,7 @@
-//* V5-ADD-005: COBOL原簿の夜間スナップショットを照会DBへ一方向ロードする。
-//INQSYNC JOB (NB),'QUERY SNAPSHOT',CLASS=A,MSGCLASS=X
-//EXPORT  EXEC PGM=INQEXPORT
-//SYSOUT  DD SYSOUT=*
-//MASTER  DD DSN=NB.CONTRACT.MASTER,DISP=SHR
-//SNAPSHOT DD DSN=NB.V05.INQUIRY(+1),DISP=(NEW,CATLG,DELETE),
-//            SPACE=(TRK,(20,10)),DCB=(RECFM=FB,LRECL=40)
-//TRANSFER EXEC PGM=FTPSEND,COND=(0,NE,EXPORT)
-//INPUT    DD DSN=NB.V05.INQUIRY(+1),DISP=SHR
-//LOAD     EXEC PGM=JAVA,PARM='SnapshotImportJob',COND=(0,NE,TRANSFER)
-//STDOUT   DD SYSOUT=*
-//* V5-ADD-005 契約原簿への更新ステップは設けない。
+//* V5の論理順序。実メインフレームで実行するJCLではない。
+//* V4査定と全量抽出の完了をCOBOL運用側で確認する。
+//* 1. NB/MDの同一締め申込・結果を確定
+//* 2. SnapshotExportJobでQ5と件数・日付・ハッシュを生成
+//* 3. SnapshotImportJobで照会用DBに一括公開
+//* 4. 基準日・件数・終了状態を保管
+//* V4査定ジョブは変更しない。失敗時は次ステップを実行しない。

@@ -1,0 +1,17 @@
+[
+  {
+    "mutation": "blank_to_zero",
+    "detected": true,
+    "failing_assertion": "blank amount NULL"
+  },
+  {
+    "mutation": "commit_on_failure",
+    "detected": true,
+    "failing_assertion": "rollback restores previous whole snapshot"
+  },
+  {
+    "mutation": "wrong_medical_label",
+    "detected": true,
+    "failing_assertion": "HTTP product-specific amount label MI"
+  }
+]

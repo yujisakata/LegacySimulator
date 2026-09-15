@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "counts": {
+    "integrated": 800,
+    "reverse_order": 800,
+    "inherited_v01": 19,
+    "inherited_v02": 34,
+    "inherited_v03": 32,
+    "online": 98,
+    "invalid_master": 48,
+    "io": 10,
+    "master_change": 2
+  },
+  "sha256": {
+    "implementation/v04/batch/MDASSESS.cbl": "3e4552a2a136872f20b57d38961065b497c03a2e78fd174a47eeb886a0d51446",
+    "implementation/v04/batch/NBASSESS.cbl": "99e7463eef5b7bef6319223c0748ab879a48d5d4d85458f26ba5751e49c963fd",
+    "implementation/v04/copybook/MDAPPL.cpy": "2d71c80d13d9a9c5a4c466aa763a2471aceb4f433e78f71681c21896acac9954",
+    "implementation/v04/copybook/MDRESULT.cpy": "4b193a8e43c9b7af476bae9f3182e10ab64bf8fc60d77969d36913f2d6db3579",
+    "implementation/v04/copybook/NBAPPL.cpy": "f5ca871b4843d148ec004b49ed0513d82de6f5077ee73f1a77dee49b571761a2",
+    "implementation/v04/copybook/NBRESULT.cpy": "e026d57c854645069d0eda1678304eeddd027fc72ca04dbd0aa3bb0d1e1e95a7",
+    "implementation/v04/jcl/RGJOB04.jcl": "855405d6c25c23a79a11f48b8e7227fefe8a95d661646aa22339d10a35f80d6c",
+    "implementation/v04/jcl/run-job-v04.ps1": "5add89f6a54f07548a7d9bba75b44924667df086600000fb144068626f4f12ed",
+    "implementation/v04/master/REGDATE.DAT": "9505e0714e41a6403557ea8c7354835e1fe18e654bb8a7c4530a775c4ecf6201",
+    "implementation/v04/online/MDENTRY.cbl": "b05592cfcb2703a44a646d06da804bdb9e6e694c0c3527dbfb51ad5a9cbd69dd",
+    "implementation/v04/online/NBENTRY.cbl": "7121e387e90f9f91d1e87a5925ef3ee96ce151d1d4656a89d8337a8d09a9477d",
+    "implementation/v04/README.md": "11b44a14b2dfd72598c444c3a2fc20a91372b71fc36499bfbefaca52441bd1fb",
+    "test/v04/cases/integrated_cases.csv": "a01508f6eae28e8b5b204a1e545061dad599cada797de4a2df674d6790c5aac8",
+    "test/v04/cases/regulatory_cases.csv": "3972a00f7cf6c4b0b697180c1e15017af82c359b5f5612ee4c6855ae12febaa6",
+    "test/v04/README.md": "ffce04dfbc01c0d8b860d4e221a2d7d5bee27c818e5f9166b5fd7daf6618a484",
+    "test/v04/scripts/build-v04.ps1": "b07698a36c83574f9eab7b052cf78038fac7a14942759ed80609a11f4e2fc2f7",
+    "test/v04/scripts/run-tests.ps1": "f84e30822232effb132a541cb4370b8842a9c0a07ba7af7b1d4b3aef2a2cdcd7",
+    "test/v04/scripts/verify_mutations.py": "f0b67222ad480c1b37244e6c3e8eff8d4aed509bd9511250c1747ab4ebb73fa1",
+    "test/v04/scripts/verify_v04.py": "23f97d480474069180602693cada934db6f5a5a2693f02f6d8ab49f55ca2f39d"
+  }
+}

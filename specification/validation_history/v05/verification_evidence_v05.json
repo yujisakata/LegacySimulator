@@ -1,0 +1,67 @@
+{
+  "version": "V5",
+  "verified_at": "2026-09-15T23:18:49.870499+09:00",
+  "java_tests": {
+    "status": "PASS",
+    "assertions": 101
+  },
+  "v4_cobol_integration_products": [
+    "WL",
+    "MI",
+    "CI"
+  ],
+  "command_checks": {
+    "first": "PUBLISHED",
+    "retry": "UNCHANGED",
+    "database_rows": 3
+  },
+  "v4_unchanged_files": 19,
+  "dependencies": [
+    {
+      "file": "ecj-3.26.0.jar",
+      "url": "https://repo.maven.apache.org/maven2/org/eclipse/jdt/ecj/3.26.0/ecj-3.26.0.jar",
+      "sha256": "ac0ba5876eaf7ebb47749a0d1be179c51f194b9dd0b875d1c09e1b530f5a2db5"
+    },
+    {
+      "file": "tomcat-embed-core-9.0.121.jar",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/9.0.121/tomcat-embed-core-9.0.121.jar",
+      "sha256": "abd8674e1472f2f3e5769d3f1de46c3d4f63a38f323b21ed8d34531b9bf305f6"
+    },
+    {
+      "file": "h2-2.2.224.jar",
+      "url": "https://repo.maven.apache.org/maven2/com/h2database/h2/2.2.224/h2-2.2.224.jar",
+      "sha256": "b9d8f19358ada82a4f6eb5b174c6cfe320a375b5a9cb5a4fe456d623e6e55497"
+    },
+    {
+      "file": "javax.annotation-api-1.3.2.jar",
+      "url": "https://repo.maven.apache.org/maven2/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.jar",
+      "sha256": "e04ba5195bcd555dc95650f7cc614d151e4bcd52d29a10b8aa2197f3ab89ab9b"
+    }
+  ],
+  "sha256": {
+    "implementation/v05/java/com/legacysimulator/v05/ContractInquiryServlet.java": "f0e199747bd0571386da3fa2e5ab1136ba342b9adc7b878d6cc973fb0fd15da4",
+    "implementation/v05/java/com/legacysimulator/v05/FixedLengthInquiryConverter.java": "0c64bc5cc4af9da530274883e0a8dccb067ffa8f4bf9781a745a19af17b9e0f6",
+    "implementation/v05/java/com/legacysimulator/v05/InquiryRecord.java": "38226b71991384db0f8b860a81a25ddf4203b8b798f7d42ad2ed6dac23382917",
+    "implementation/v05/java/com/legacysimulator/v05/JdbcInquiryDao.java": "8e8990f46378e72305975bd8f0db36cf1d019449ecb6c80bafd9d5c58aed9705",
+    "implementation/v05/java/com/legacysimulator/v05/SnapshotExportJob.java": "286716fd5413c52fd92ecc0102c533a8af9432241fd3f044dfdaece6c7f37fcd",
+    "implementation/v05/java/com/legacysimulator/v05/SnapshotImportJob.java": "ecd019028412a9ade3068b9a700ce672e397d4aca42edec22e67d355ac03be5e",
+    "implementation/v05/jcl/INQSYNC.jcl": "0f8ca70aea5d54ae372e377e7958bf7a6902a5bfcfd85b7ddee9783f9ff6fd0e",
+    "implementation/v05/jcl/run-inquiry-sync.ps1": "623995eda019896037393e39de92021583d672ef2bb53d3e09535bf3ae0d8419",
+    "implementation/v05/README.md": "576f5aca352982933bc1f6a87084282cda16e1b6cbaccf85a1e3ed943ee89e7e",
+    "implementation/v05/sql/inquiry_schema.sql": "dc25dbf1ab731a7de0ed4740dd4d98819f18a56d808262b6d8411120564e87b5",
+    "implementation/v05/web/WEB-INF/web.xml": "cc3fbc7f7afda94c6fa7719a44eaf42c19f05d66a1d5d316a383dafe47ddb79f",
+    "specification/development_history/v05/decision_log_v05.md": "f67aad38ee8808516c27dae6f39451881265780f5cb5a55b40c29dde1803aaa5",
+    "specification/development_history/v05/difficulty_register_v05.md": "1d5d249056316cc45adab1093525e4dd333395f2ea213876fb7dc447e6c5796d",
+    "specification/development_history/v05/proposal_comparison_v05.md": "061a0d4f11c79b97765638cffca9ffcd73e2fbef26853cfa2f34a0dad7cb5be9",
+    "specification/development_history/v05/work_log_v05.md": "41138b5ffb168e73b0acbdda655c90102114a19349d7c9371343080bede3acc4",
+    "test/v05/cases/inquiry_cases.csv": "d454323af399ec17cafcaeb09135639773efc6f2f68dda5352ce1cda015df297",
+    "test/v05/dependencies.lock.json": "071c57e8dff23e57bb44fb3358fdce5de0defdeba90d103d1b2970b540e75aec",
+    "test/v05/java/V5IntegrationTest.java": "8d5fc9ff9c70e7f30ae82b79ebb7e0b78ef9c793a674738d98c62cb8f31e4acc",
+    "test/v05/README.md": "e8bc981a32ecc59ea433b6a8217bfd27d426086826751940f4a6fe756aa6c8eb",
+    "test/v05/scripts/build-v05.ps1": "9456ba6744ac40b7b00cab0a07ca40be5dbc37c8ff4a9994dd90aa2539b02ff3",
+    "test/v05/scripts/prepare-dependencies.ps1": "a0fd1c3fe0a17977758cb4fdd2083cac6cc35963f42fb84111063ba8cd8fae9f",
+    "test/v05/scripts/prepare_v4_fixture.py": "e683207fc3435231f55afd780bd27e668f632d0266b797938ffd3023103f4d5c",
+    "test/v05/scripts/run-tests.ps1": "0d54c25eca0988467938991952bf3f4140afa3bb2864014e645f788dfd081ef3",
+    "test/v05/scripts/verify_mutations.py": "9ef24c1d6469604dcc55601438c2c66a9e7959b87df89b2e76f7831ff51283d7"
+  }
+}

@@ -1,0 +1,10 @@
+----------
+1. WARNING in D:\projects\LegacySimulator\test\v05\java\V5IntegrationTest.java (at line 195)
+	Tomcat.addServlet(ctx,"inquiry",new ContractInquiryServlet(new JdbcInquiryDao(webSource())));ctx.addServletMappingDecoded("/inquiry","inquiry",false);
+	                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The method addServletMappingDecoded(String, String, boolean) from the type Context is deprecated
+----------
+1 problem (1 warning)
+V5 Java compilation PASS
+UNCHANGED
+V5 snapshot job completed

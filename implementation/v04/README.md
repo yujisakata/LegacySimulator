@@ -1,19 +1,23 @@
-# V4 告知制度対応実装
+# V4 告知制度対応の実装
 
-告知制度の施行日対応を、端末登録、共通COPY句、日次査定、ジョブネットとして構成する。`batch/RGASSESS.cbl`は80文字の告知入力を読み、新旧基準と再告知例外を適用して40文字の結果を出力する。
+対象Version: V4・緊急補正後<br>
+想定読者: 開発・検証担当
 
-| 資産 | 役割 |
-|---|---|
-| `online/RGENTRY.cbl` | 新旧告知回答と再告知フラグの登録、適用予定制度の表示 |
-| `copybook/RGDISC.cpy` | 80文字告知入力レコード |
-| `copybook/RGRESLT.cpy` | 40文字制度判定結果レコード |
-| `batch/RGASSESS.cbl` | 受付日／告知日から新旧段落を選択 |
-| `jcl/RGJOB04.jcl` | 抽出、査定、監査のジョブ順序 |
+[最終要件](../../specification/requirements/v04/regulatory_additional_requirements_v04.md)を実装する。WLはV2のNBENTRY/NBASSESS、MI/CIはV3のMDENTRY/MDASSESSを局所変更して継承した。過去Versionのファイルは変更しない。
 
-- `V4-001 ADD`: 制度施行日による新旧段落
-- `V4-002 ADD/DEL`: 再告知時の告知日優先補正
-- 日本語コメントで変更理由を記録
+| 入力系統 | 受付 | 申込 | 査定 | 結果 |
+|---|---|---|---|---|
+| 終身・特約 | online/NBENTRY.cbl | APPLICATION.DAT | batch/NBASSESS.cbl | ASSESSMENT.DAT |
+| 医療・がん | online/MDENTRY.cbl | MEDICAL.DAT | batch/MDASSESS.cbl | MEDASSESS.DAT |
 
-V1～V3のソースは編集しない。
+両系統はREGDATE.DATを読む。雛形は[制度日マスタ](master/REGDATE.DAT)。申込は120文字、結果80文字で、追加項目は予約領域内に配置する。[COPY一覧](copybook/)と[レイアウト](../../specification/external_design/v04/regulatory_effective_date_design_v04.md)を参照する。
 
-V4の端末・査定プログラムは `test/v04/scripts/build-v04.ps1` で両方を実コンパイルする。
+```powershell
+.\test\v04\scripts\run-tests.ps1
+```
+
+上記はコンパイルして隔離一時ディレクトリで検証する。実際の入力ファイルを使う場合、作業ディレクトリにAPPLICATION.DAT、MEDICAL.DAT、REGDATE.DATを配置し、[実行ジョブ](jcl/run-job-v04.ps1)へ渡す。受付実行時もREGDATE.DATが必要で、COB_LS_FIXED=TRUEとGnuCOBOLのDLL検索パスを設定する。手入力端末の代替として標準入力を使う。
+
+ソースのV4-001は制度対応、V4-002は再告知補正、V4-003は教材実行環境の入出力対応。最新ソースの3150には、施行前の設計追補にない再告知分岐が含まれる。[障害票](../../specification/validation_history/v04/incident_patch_note_v04.md)を併読する。
+
+作業開始時に残っていた旧RG系8件のfixtureは、[旧fixtureの位置付け](../../test/v04/README.md)の通り参考資産として保存した。今回の配布は既存査定を継承したNB/MD系であり、RG系80文字入力・40文字出力とは別インターフェースである。

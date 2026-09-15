@@ -1,0 +1,22 @@
+[
+  {
+    "file": "ecj-3.26.0.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jdt/ecj/3.26.0/ecj-3.26.0.jar",
+    "sha256": "ac0ba5876eaf7ebb47749a0d1be179c51f194b9dd0b875d1c09e1b530f5a2db5"
+  },
+  {
+    "file": "tomcat-embed-core-9.0.121.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/9.0.121/tomcat-embed-core-9.0.121.jar",
+    "sha256": "abd8674e1472f2f3e5769d3f1de46c3d4f63a38f323b21ed8d34531b9bf305f6"
+  },
+  {
+    "file": "h2-2.2.224.jar",
+    "url": "https://repo.maven.apache.org/maven2/com/h2database/h2/2.2.224/h2-2.2.224.jar",
+    "sha256": "b9d8f19358ada82a4f6eb5b174c6cfe320a375b5a9cb5a4fe456d623e6e55497"
+  },
+  {
+    "file": "javax.annotation-api-1.3.2.jar",
+    "url": "https://repo.maven.apache.org/maven2/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.jar",
+    "sha256": "e04ba5195bcd555dc95650f7cc614d151e4bcd52d29a10b8aa2197f3ab89ab9b"
+  }
+]

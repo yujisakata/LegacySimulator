@@ -1,0 +1,251 @@
+----------
+1. WARNING in D:\projects\LegacySimulator\test\v05\java\V5IntegrationTest.java (at line 209)
+	Tomcat.addServlet(ctx,"inquiry",new ContractInquiryServlet(new JdbcInquiryDao(webSource())));ctx.addServletMappingDecoded("/inquiry","inquiry",false);
+	                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The method addServletMappingDecoded(String, String, boolean) from the type Context is deprecated
+----------
+1 problem (1 warning)
+V5 Java compilation PASS
+D:\projects\LegacySimulator\implementation\v04\batch\NBASSESS.cbl:4: warning: AUTHOR is obsolete in GnuCOBOL [-Wobsolete]
+    2 |        PROGRAM-ID. NBASSESS.
+    3 |       *V2-001 DEL AUTHOR. V1-NEW-BUSINESS-TEAM.
+    4 >        AUTHOR. V2-NEW-BUSINESS-TEAM.
+    5 |       *
+    6 |       * 変更履歴
+D:\projects\LegacySimulator\implementation\v04\batch\NBASSESS.cbl:39: warning: RECORD clause ignored for LINE SEQUENTIAL [-Wadditional]
+   37 | 
+   38 |        FD  RESULT-FILE
+   39 >            RECORD CONTAINS 80 CHARACTERS.
+   40 |            COPY "NBRESULT.cpy".
+   41 | 
+D:\projects\LegacySimulator\implementation\v04\batch\MDASSESS.cbl:5: warning: AUTHOR is obsolete in GnuCOBOL [-Wobsolete]
+    3 |        PROGRAM-ID. MDASSESS.
+    4 |       *V3-001 DEL AUTHOR. V1-NEW-BUSINESS-TEAM.
+    5 >        AUTHOR. V3-MEDICAL-PRODUCT-TEAM.
+    6 |       *
+    7 |       * 変更履歴
+D:\projects\LegacySimulator\implementation\v04\batch\MDASSESS.cbl:43: warning: RECORD clause ignored for LINE SEQUENTIAL [-Wadditional]
+   41 | 
+   42 |        FD  RESULT-FILE
+   43 >            RECORD CONTAINS 80 CHARACTERS.
+   44 |       *V3-001 DEL COPY "NBRESULT.cpy".
+   45 |            COPY "MDRESULT.cpy".
+D:\projects\LegacySimulator\implementation\v04\online\NBENTRY.cbl:4: warning: AUTHOR is obsolete in GnuCOBOL [-Wobsolete]
+    2 |        PROGRAM-ID. NBENTRY.
+    3 |       *V2-001 DEL AUTHOR. V1-NEW-BUSINESS-TEAM.
+    4 >        AUTHOR. V2-NEW-BUSINESS-TEAM.
+    5 |       *
+    6 |       * 変更履歴
+D:\projects\LegacySimulator\implementation\v04\online\NBENTRY.cbl:25: warning: RECORD clause ignored for LINE SEQUENTIAL [-Wadditional]
+   23 |        FILE SECTION.
+   24 |        FD  APPLICATION-FILE
+   25 >            RECORD CONTAINS 120 CHARACTERS.
+   26 |            COPY "NBAPPL.cpy".
+   27 | 
+D:\projects\LegacySimulator\implementation\v04\online\MDENTRY.cbl:5: warning: AUTHOR is obsolete in GnuCOBOL [-Wobsolete]
+    3 |        PROGRAM-ID. MDENTRY.
+    4 |       *V3-001 DEL AUTHOR. V1-NEW-BUSINESS-TEAM.
+    5 >        AUTHOR. V3-MEDICAL-PRODUCT-TEAM.
+    6 |       *
+    7 |       * 変更履歴
+D:\projects\LegacySimulator\implementation\v04\online\MDENTRY.cbl:27: warning: RECORD clause ignored for LINE SEQUENTIAL [-Wadditional]
+   25 |        FILE SECTION.
+   26 |        FD  APPLICATION-FILE
+   27 >            RECORD CONTAINS 120 CHARACTERS.
+   28 |       *V3-001 DEL COPY "NBAPPL.cpy".
+   29 |            COPY "MDAPPL.cpy".
+D:\projects\LegacySimulator\implementation\v04\online\MDENTRY.cbl: in paragraph '2000-VALIDATE-INPUT':
+D:\projects\LegacySimulator\implementation\v04\online\MDENTRY.cbl:170: warning: unsigned 'WS-AGE' may not be LESS THAN ZERO [-Wconstant-expression]
+  168 |       *V3-001 ADD START - BR-V3-MI-001/CI-001 年齢条件。
+  169 |                IF (APP-PRODUCT-CODE = "MI"
+  170 >                    AND (WS-AGE < 0 OR WS-AGE > 70))
+  171 |                    OR (APP-PRODUCT-CODE = "CI"
+  172 |                    AND (WS-AGE < 20 OR WS-AGE > 65))
+V4 COBOL programs built in: D:\projects\LegacySimulator\build\v04
+V4 actual COBOL source fixtures: 3 cases PASS
+PASS Q5 declared physical length
+PASS product WL
+PASS product MI
+PASS product CI
+PASS status 01
+PASS status 02
+PASS status 03
+PASS status 04
+PASS status 05
+PASS status 06
+PASS status 07
+PASS status 08
+PASS status 09
+PASS blank amount NULL
+PASS zero amount is zero
+PASS zero date NULL at 24
+PASS zero date NULL at 32
+PASS zero date NULL at 40
+PASS zero date NULL at 51
+PASS century leap day
+PASS invalid Q5 0 [IllegalArgumentException]
+PASS invalid Q5 1 [IllegalArgumentException]
+PASS invalid Q5 2 [IllegalArgumentException]
+PASS invalid Q5 3 [IllegalArgumentException]
+PASS invalid Q5 4 [IllegalArgumentException]
+PASS invalid Q5 5 [IllegalArgumentException]
+PASS invalid Q5 6 [IllegalArgumentException]
+PASS invalid Q5 7 [IllegalArgumentException]
+PASS invalid Q5 8 [IllegalArgumentException]
+PASS invalid Q5 9 [IllegalArgumentException]
+PASS invalid Q5 10 [IllegalArgumentException]
+PASS invalid Q5 11 [IllegalArgumentException]
+PASS invalid Q5 12 [IllegalArgumentException]
+PASS invalid Q5 13 [IllegalArgumentException]
+PASS invalid Q5 14 [IllegalArgumentException]
+PASS invalid Q5 15 [IllegalArgumentException]
+PASS invalid Q5 16 [IllegalArgumentException]
+PASS invalid Q5 17 [IllegalArgumentException]
+PASS invalid Q5 18 [IllegalArgumentException]
+PASS invalid Q5 19 [IllegalArgumentException]
+PASS HTML escaping
+PASS pending not approval
+PASS initial snapshot unavailable [SQLException]
+PASS initial full publication
+PASS JDBC zero preserved
+PASS JDBC NULL preserved
+PASS not found
+PASS idempotent retry
+PASS same day conflict [IllegalArgumentException]
+PASS older snapshot rejected [IllegalArgumentException]
+PASS future snapshot rejected [IllegalArgumentException]
+PASS duplicate snapshot rejected [IllegalArgumentException]
+PASS mixed dates rejected [IllegalArgumentException]
+PASS checksum failure [IllegalArgumentException]
+PASS count mismatch [IllegalArgumentException]
+PASS later malformed row aborts publication [IllegalArgumentException]
+PASS old snapshot survives validation failures
+PASS JDBC insertion failure [JdbcSQLIntegrityConstraintViolationException]
+PASS rollback restores previous whole snapshot
+PASS Web DB permission rejects write [JdbcSQLNonTransientException]
+PASS Web DB permission rejects write [JdbcSQLNonTransientException]
+PASS Web DB permission rejects write [JdbcSQLNonTransientException]
+PASS concurrent importer waits for state lock
+PASS reader sees previous published generation
+PASS waiting importer publishes
+PASS full replacement removes absent rows
+PASS declared zero row snapshot
+PASS empty publication is not initial unavailable
+PASS real V4 output joined for three products
+PASS V4 redisclosure copied WL
+PASS V4 redisclosure copied MI
+PASS V4 redisclosure copied CI
+PASS V4 to JDBC publication
+PASS V4 duplicate application [IllegalArgumentException]
+PASS V4 receipt mismatch [IllegalArgumentException]
+PASS V4 orphan result [IllegalArgumentException]
+PASS V4 duplicate result [IllegalArgumentException]
+PASS V4 physical application length [IllegalArgumentException]
+PASS V4 physical result length [IllegalArgumentException]
+PASS V4 wrong product lane [IllegalArgumentException]
+PASS V4 duplicate across lanes [IllegalArgumentException]
+PASS V4 process mismatch [IllegalArgumentException]
+PASS V4 pending joined
+PASS V4 pending joined
+PASS V4 pending joined
+9 15, 2026 11:14:07 �ߌ� org.apache.coyote.AbstractProtocol init
+���: Initializing ProtocolHandler ["http-nio-127.0.0.1-auto-1"]
+9 15, 2026 11:14:07 �ߌ� org.apache.catalina.core.StandardService startInternal
+���: Starting service [Tomcat]
+9 15, 2026 11:14:07 �ߌ� org.apache.catalina.core.StandardEngine startInternal
+���: Starting Servlet engine: [Apache Tomcat/9.0.121]
+9 15, 2026 11:14:07 �ߌ� org.apache.catalina.webresources.DirResourceSet initInternal
+�x��: Disabled the global canonical file name cache to protect against CVE-2024-56337 when starting the WebResourceSet at [D:\projects\LegacySimulator\build\v05\run-5d03d655964a4c3fbf9063ed83e294bc\webroot] which is part of the web application []
+9 15, 2026 11:14:12 �ߌ� org.apache.catalina.util.SessionIdGeneratorBase createSecureRandom
+�x��: Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [5,004] milliseconds.
+9 15, 2026 11:14:12 �ߌ� org.apache.coyote.AbstractProtocol start
+���: Starting ProtocolHandler ["http-nio-127.0.0.1-auto-1-49939"]
+PASS HTTP unauthenticated 401
+PASS HTTP wrong role 403
+PASS HTTP input form
+PASS HTTP invalid number 400
+PASS HTTP missing 404
+PASS HTTP update 405
+PASS HTTP V4 result WL
+PASS HTTP product-specific amount label WL
+PASS HTTP no cache WL
+PASS HTTP V4 result MI
+PASS HTTP product-specific amount label MI
+PASS HTTP no cache MI
+PASS HTTP V4 result CI
+PASS HTTP product-specific amount label CI
+PASS HTTP no cache CI
+9 15, 2026 11:14:12 �ߌ� org.apache.catalina.core.ApplicationContext log
+�d��: Inquiry database unavailable
+org.h2.jdbc.JdbcSQLNonTransientException: �I�u�W�F�N�g "PUBLIC.INQUIRY_SNAPSHOT" �ɑ΂���\���Ȍ���������܂���
+Not enough rights for object "PUBLIC.INQUIRY_SNAPSHOT"; SQL statement:
+SELECT S.AS_OF AS PUBLISHED_DATE,R.* FROM INQUIRY_STATE S LEFT JOIN INQUIRY_SNAPSHOT R ON R.APP_NUMBER=? WHERE S.ID=1 [90096-224]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:566)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.engine.User.checkTableRight(User.java:191)
+	at org.h2.table.TableFilter.<init>(TableFilter.java:161)
+	at org.h2.command.Parser.buildTableFilter(Parser.java:1864)
+	at org.h2.command.Parser.readTablePrimary(Parser.java:1804)
+	at org.h2.command.Parser.readTableReference(Parser.java:2268)
+	at org.h2.command.Parser.readTableReference(Parser.java:2285)
+	at org.h2.command.Parser.parseSelectFromPart(Parser.java:2718)
+	at org.h2.command.Parser.parseSelect(Parser.java:2824)
+	at org.h2.command.Parser.parseQueryPrimary(Parser.java:2708)
+	at org.h2.command.Parser.parseQueryTerm(Parser.java:2564)
+	at org.h2.command.Parser.parseQueryExpressionBody(Parser.java:2543)
+	at org.h2.command.Parser.parseQueryExpressionBodyAndEndOfQuery(Parser.java:2536)
+	at org.h2.command.Parser.parseQueryExpression(Parser.java:2529)
+	at org.h2.command.Parser.parseQuery(Parser.java:2498)
+	at org.h2.command.Parser.parsePrepared(Parser.java:627)
+	at org.h2.command.Parser.parse(Parser.java:592)
+	at org.h2.command.Parser.parse(Parser.java:564)
+	at org.h2.command.Parser.prepareCommand(Parser.java:483)
+	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:639)
+	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:559)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1166)
+	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:93)
+	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:316)
+	at com.legacysimulator.v05.JdbcInquiryDao.find(JdbcInquiryDao.java:13)
+	at com.legacysimulator.v05.ContractInquiryServlet.service(ContractInquiryServlet.java:35)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:623)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:201)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:146)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:646)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:129)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:86)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:71)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:350)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:409)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:71)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:1344)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:2254)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:74)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:976)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:494)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:80)
+	at java.lang.Thread.run(Unknown Source)
+
+PASS HTTP database failure 503 without internals
+9 15, 2026 11:14:12 �ߌ� org.apache.coyote.AbstractProtocol pause
+���: Pausing ProtocolHandler ["http-nio-127.0.0.1-auto-1-49939"]
+9 15, 2026 11:14:12 �ߌ� org.apache.catalina.core.StandardService stopInternal
+���: Stopping service [Tomcat]
+9 15, 2026 11:14:12 �ߌ� org.apache.catalina.loader.WebappClassLoaderBase clearReferencesThreads
+�x��: The web application [ROOT] appears to have started a thread named [SeedGenerator Thread] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ sun.security.provider.SeedGenerator$ThreadedSeedGenerator.run(Unknown Source)
+ java.lang.Thread.run(Unknown Source)
+9 15, 2026 11:14:12 �ߌ� org.apache.catalina.loader.WebappClassLoaderBase clearReferencesThreads
+�x��: The web application [ROOT] appears to have started a thread named [SeedGenerator Thread] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.lang.Thread.sleep(Native Method)
+ sun.security.provider.SeedGenerator$ThreadedSeedGenerator$BogusThread.run(Unknown Source)
+ java.lang.Thread.run(Unknown Source)
+9 15, 2026 11:14:12 �ߌ� org.apache.coyote.AbstractProtocol stop
+���: Stopping ProtocolHandler ["http-nio-127.0.0.1-auto-1-49939"]
+9 15, 2026 11:14:12 �ߌ� org.apache.coyote.AbstractProtocol destroy
+���: Destroying ProtocolHandler ["http-nio-127.0.0.1-auto-1-49939"]
+V5 ALL PASS: 101 assertions
+V5 results: D:\projects\LegacySimulator\build\v05\run-5d03d655964a4c3fbf9063ed83e294bc

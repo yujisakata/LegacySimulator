@@ -21,12 +21,14 @@ $env:COB_LIBRARY_PATH = Join-Path $gnuCobolRoot 'lib\gnucobol'
 New-Item -ItemType Directory -Path $OutputDirectory -Force | Out-Null
 $copyDirectory = Join-Path $repoRoot 'implementation\v04\copybook'
 $targets = @(
-    @{ Name='RGASSESS.exe'; Source='implementation\v04\batch\RGASSESS.cbl' },
-    @{ Name='RGENTRY.exe'; Source='implementation\v04\online\RGENTRY.cbl' }
+    @{ Name='NBASSESS.exe'; Source='implementation\v04\batch\NBASSESS.cbl' },
+    @{ Name='MDASSESS.exe'; Source='implementation\v04\batch\MDASSESS.cbl' },
+    @{ Name='NBENTRY.exe'; Source='implementation\v04\online\NBENTRY.cbl' },
+    @{ Name='MDENTRY.exe'; Source='implementation\v04\online\MDENTRY.cbl' }
 )
 foreach ($item in $targets) {
     $target = Join-Path $OutputDirectory $item.Name
-    & $compilerPath -x -fixed -I $copyDirectory -o $target (Join-Path $repoRoot $item.Source)
+    & $compilerPath -Wall -x -fixed -I $copyDirectory -o $target (Join-Path $repoRoot $item.Source)
     if ($LASTEXITCODE -ne 0) { throw "V4 COBOL compilation failed: $($item.Name)" }
 }
 Write-Host "V4 COBOL programs built in: $OutputDirectory"

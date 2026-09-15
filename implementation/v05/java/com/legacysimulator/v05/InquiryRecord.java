@@ -1,34 +1,21 @@
 package com.legacysimulator.v05;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 
-// V5-ADD-001: 夜間複製された参照専用データを表すJavaBean。
-// 当時のServlet/JSPから利用できるよう、recordではなく明示的なgetterを持つ。
+/** V5-ADD-001: 照会用複製。査定ロジックは持たない。 */
 public final class InquiryRecord {
-    private final String contractNumber;
-    private final String status;
-    private final BigDecimal insuredAmount;
-    private final String asOfDate;
-
-    public InquiryRecord(String contractNumber, String status,
-                         BigDecimal insuredAmount, String asOfDate) {
-        if (contractNumber == null || contractNumber.length() != 10) {
-            throw new IllegalArgumentException("契約番号は10桁です");
-        }
-        if (asOfDate == null || asOfDate.length() != 8) {
-            throw new IllegalArgumentException("基準日はYYYYMMDDです");
-        }
-        this.contractNumber = contractNumber;
-        this.status = status;
-        this.insuredAmount = insuredAmount;
-        this.asOfDate = asOfDate;
+    public final String number, product, status, rule, reason, approval;
+    public final BigDecimal amount;
+    public final Date responsibility, processed, received, applied, asOf;
+    public InquiryRecord(String number, String product, String status,
+            BigDecimal amount, Date responsibility, Date processed,
+            Date received, String rule, Date applied, Date asOf,
+            String reason, String approval) {
+        this.number=number; this.product=product; this.status=status;
+        this.amount=amount; this.responsibility=responsibility;
+        this.processed=processed; this.received=received; this.rule=rule;
+        this.applied=applied; this.asOf=asOf; this.reason=reason;
+        this.approval=approval;
     }
-
-    public String getContractNumber() { return contractNumber; }
-    public String getStatus() { return status; }
-    public BigDecimal getInsuredAmount() { return insuredAmount; }
-    public String getAsOfDate() { return asOfDate; }
-
-    public boolean hasStatus() { return status != null; }
-    public boolean hasInsuredAmount() { return insuredAmount != null; }
 }

@@ -1,0 +1,130 @@
+----------
+1. WARNING in D:\projects\LegacySimulator\test\v05\java\V5IntegrationTest.java (at line 195)
+	Tomcat.addServlet(ctx,"inquiry",new ContractInquiryServlet(new JdbcInquiryDao(webSource())));ctx.addServletMappingDecoded("/inquiry","inquiry");
+	                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The method addServletMappingDecoded(String, String) from the type Context is deprecated
+----------
+1 problem (1 warning)
+V5 Java compilation PASS
+D:\projects\LegacySimulator\implementation\v04\batch\NBASSESS.cbl:4: warning: AUTHOR is obsolete in GnuCOBOL [-Wobsolete]
+    2 |        PROGRAM-ID. NBASSESS.
+    3 |       *V2-001 DEL AUTHOR. V1-NEW-BUSINESS-TEAM.
+    4 >        AUTHOR. V2-NEW-BUSINESS-TEAM.
+    5 |       *
+    6 |       * 変更履歴
+D:\projects\LegacySimulator\implementation\v04\batch\NBASSESS.cbl:39: warning: RECORD clause ignored for LINE SEQUENTIAL [-Wadditional]
+   37 | 
+   38 |        FD  RESULT-FILE
+   39 >            RECORD CONTAINS 80 CHARACTERS.
+   40 |            COPY "NBRESULT.cpy".
+   41 | 
+D:\projects\LegacySimulator\implementation\v04\batch\MDASSESS.cbl:5: warning: AUTHOR is obsolete in GnuCOBOL [-Wobsolete]
+    3 |        PROGRAM-ID. MDASSESS.
+    4 |       *V3-001 DEL AUTHOR. V1-NEW-BUSINESS-TEAM.
+    5 >        AUTHOR. V3-MEDICAL-PRODUCT-TEAM.
+    6 |       *
+    7 |       * 変更履歴
+D:\projects\LegacySimulator\implementation\v04\batch\MDASSESS.cbl:43: warning: RECORD clause ignored for LINE SEQUENTIAL [-Wadditional]
+   41 | 
+   42 |        FD  RESULT-FILE
+   43 >            RECORD CONTAINS 80 CHARACTERS.
+   44 |       *V3-001 DEL COPY "NBRESULT.cpy".
+   45 |            COPY "MDRESULT.cpy".
+D:\projects\LegacySimulator\implementation\v04\online\NBENTRY.cbl:4: warning: AUTHOR is obsolete in GnuCOBOL [-Wobsolete]
+    2 |        PROGRAM-ID. NBENTRY.
+    3 |       *V2-001 DEL AUTHOR. V1-NEW-BUSINESS-TEAM.
+    4 >        AUTHOR. V2-NEW-BUSINESS-TEAM.
+    5 |       *
+    6 |       * 変更履歴
+D:\projects\LegacySimulator\implementation\v04\online\NBENTRY.cbl:25: warning: RECORD clause ignored for LINE SEQUENTIAL [-Wadditional]
+   23 |        FILE SECTION.
+   24 |        FD  APPLICATION-FILE
+   25 >            RECORD CONTAINS 120 CHARACTERS.
+   26 |            COPY "NBAPPL.cpy".
+   27 | 
+D:\projects\LegacySimulator\implementation\v04\online\MDENTRY.cbl:5: warning: AUTHOR is obsolete in GnuCOBOL [-Wobsolete]
+    3 |        PROGRAM-ID. MDENTRY.
+    4 |       *V3-001 DEL AUTHOR. V1-NEW-BUSINESS-TEAM.
+    5 >        AUTHOR. V3-MEDICAL-PRODUCT-TEAM.
+    6 |       *
+    7 |       * 変更履歴
+D:\projects\LegacySimulator\implementation\v04\online\MDENTRY.cbl:27: warning: RECORD clause ignored for LINE SEQUENTIAL [-Wadditional]
+   25 |        FILE SECTION.
+   26 |        FD  APPLICATION-FILE
+   27 >            RECORD CONTAINS 120 CHARACTERS.
+   28 |       *V3-001 DEL COPY "NBAPPL.cpy".
+   29 |            COPY "MDAPPL.cpy".
+D:\projects\LegacySimulator\implementation\v04\online\MDENTRY.cbl: in paragraph '2000-VALIDATE-INPUT':
+D:\projects\LegacySimulator\implementation\v04\online\MDENTRY.cbl:170: warning: unsigned 'WS-AGE' may not be LESS THAN ZERO [-Wconstant-expression]
+  168 |       *V3-001 ADD START - BR-V3-MI-001/CI-001 年齢条件。
+  169 |                IF (APP-PRODUCT-CODE = "MI"
+  170 >                    AND (WS-AGE < 0 OR WS-AGE > 70))
+  171 |                    OR (APP-PRODUCT-CODE = "CI"
+  172 |                    AND (WS-AGE < 20 OR WS-AGE > 65))
+V4 COBOL programs built in: D:\projects\LegacySimulator\build\v04
+V4 actual COBOL source fixtures: 3 cases PASS
+PASS Q5 declared physical length
+PASS product WL
+PASS product MI
+PASS product CI
+PASS status 01
+PASS status 02
+PASS status 03
+PASS status 04
+PASS status 05
+PASS status 06
+PASS status 07
+PASS status 08
+PASS status 09
+PASS blank amount NULL
+PASS zero amount is zero
+PASS zero date NULL at 24
+PASS zero date NULL at 32
+PASS zero date NULL at 40
+PASS zero date NULL at 51
+PASS century leap day
+PASS invalid Q5 0 [IllegalArgumentException]
+PASS invalid Q5 1 [IllegalArgumentException]
+PASS invalid Q5 2 [IllegalArgumentException]
+PASS invalid Q5 3 [IllegalArgumentException]
+PASS invalid Q5 4 [IllegalArgumentException]
+PASS invalid Q5 5 [IllegalArgumentException]
+PASS invalid Q5 6 [IllegalArgumentException]
+PASS invalid Q5 7 [IllegalArgumentException]
+PASS invalid Q5 8 [IllegalArgumentException]
+PASS invalid Q5 9 [IllegalArgumentException]
+PASS invalid Q5 10 [IllegalArgumentException]
+PASS invalid Q5 11 [IllegalArgumentException]
+PASS invalid Q5 12 [IllegalArgumentException]
+PASS invalid Q5 13 [IllegalArgumentException]
+PASS invalid Q5 14 [IllegalArgumentException]
+PASS invalid Q5 15 [IllegalArgumentException]
+PASS invalid Q5 16 [IllegalArgumentException]
+PASS invalid Q5 17 [IllegalArgumentException]
+PASS invalid Q5 18 [IllegalArgumentException]
+PASS invalid Q5 19 [IllegalArgumentException]
+PASS HTML escaping
+PASS pending not approval
+PASS initial snapshot unavailable [JdbcSQLNonTransientException]
+Exception in thread "main" org.h2.jdbc.JdbcSQLNonTransientException: ���̑���ɂ͊Ǘ��������K�v�ł�
+Admin rights are required for this operation; SQL statement:
+SET DB_CLOSE_DELAY -1 [90040-224]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:566)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.message.DbException.get(DbException.java:188)
+	at org.h2.engine.User.checkAdmin(User.java:136)
+	at org.h2.command.dml.Set.update(Set.java:191)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:169)
+	at org.h2.command.Command.executeUpdate(Command.java:256)
+	at org.h2.engine.Engine.openSession(Engine.java:259)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:343)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:125)
+	at org.h2.Driver.connect(Driver.java:59)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at V5IntegrationTest.load(V5IntegrationTest.java:51)
+	at V5IntegrationTest.database(V5IntegrationTest.java:94)
+	at V5IntegrationTest.main(V5IntegrationTest.java:219)
